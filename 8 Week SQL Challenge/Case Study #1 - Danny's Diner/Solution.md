@@ -27,12 +27,20 @@ GROUP BY customer_id
 GROUP BY customer_id
 ````
 
+| customer_id | visits |
+| ----------- | ----------- |
+| A           | 4          |
+| B           | 6          |
+| C           | 2          |
+
+
+
 ### 3.  What was the first item from the menu purchased by each customer?
 
 ````sql
 WITH food_ordering AS
 (
-SELECT *, DENSE_RANK() OVER (PARTITION BY customer_ID ORDER BY order_date) AS rank
+SELECT *, RANK() OVER (PARTITION BY customer_ID ORDER BY order_date) AS rank
   FROM DannySQLChallenge1..sales AS s
 )
 
@@ -42,6 +50,12 @@ SELECT *, DENSE_RANK() OVER (PARTITION BY customer_ID ORDER BY order_date) AS ra
    WHERE rank = 1
 GROUP BY customer_id, product_name
 ````
+| customer_id | product_name | 
+| ----------- | ----------- |
+| A           | curry        | 
+| A           | sushi        | 
+| B           | curry        | 
+| C           | ramen        |
 
 ### 4.  What is the most purchased item on the menu and how many times was it purchased by all customers?
 
@@ -53,6 +67,10 @@ GROUP BY s.product_id, product_name
 ORDER BY item_sales DESC
 
 ````
+
+| item_sales | product_name | 
+| ----------- | ----------- |
+| 8       | ramen |
 
 ### 5.  Which item was the most popular for each customer?
 
@@ -71,6 +89,14 @@ AS
    FROM cust_menu_item_rank
   WHERE rank = 1
 ````
+| customer_id | product_name | sales |
+| ----------- | ---------- |------------  |
+| A           | ramen        |  3   |
+| B           | sushi        |  2   |
+| B           | curry        |  2   |
+| B           | ramen        |  2   |
+| C           | ramen        |  3   |
+
 
 ### 6.  Which item was purchased first by the customer after they became a member?
 
@@ -90,6 +116,11 @@ SELECT s.customer_id, order_date, join_date, s.product_id, product_name,
    FROM join_order
   WHERE rank = 1
 ````
+
+| customer_id | product_name |
+| ----------- | ----------  |
+| A           |  curry       |
+| B           |  sushi       |
 
 ### 7.  Which item was purchased just before the customer became a member?
 
