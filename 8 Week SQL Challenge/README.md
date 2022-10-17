@@ -1,13 +1,16 @@
 # 8 Week SQL Challenge
 
+This is my first experiment into the world of Github and creating a portfolio!
 
+I've been practising SQL a while through different courses and books and this is my initial step into the unknown.
 
+The full challenge can be found [HERE](https://8weeksqlchallenge.com/), but essentially is broken into a number of different scenarios with varied level of difficulty within each of the challenges.
 
 ---
 
 ## Case Study #1: Danny's Diner:
 
-![image](https://user-images.githubusercontent.com/59825363/196279158-e8ad6ecc-f993-42a5-a6ca-840cf5d99c59.png)
+![image](https://user-images.githubusercontent.com/59825363/196279158-e8ad6ecc-f993-42a5-a6ca-840cf5d99c59.png, width="500" height="520")
 
 ---
 
