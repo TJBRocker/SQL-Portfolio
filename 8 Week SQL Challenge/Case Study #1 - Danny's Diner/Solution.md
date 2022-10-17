@@ -54,7 +54,8 @@ ORDER BY item_sales DESC
 WITH cust_menu_item_rank
 AS
 (
-   SELECT s.customer_id, m.product_name, COUNT(s.product_id) AS sales, RANK() OVER(PARTITION BY s.customer_id ORDER BY COUNT(s.product_id) DESC) AS rank
+   SELECT s.customer_id, m.product_name, COUNT(s.product_id) AS sales, 
+   	  RANK() OVER(PARTITION BY s.customer_id ORDER BY COUNT(s.product_id) DESC) AS rank
      FROM DannySQLChallenge1..sales AS s
      JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
  GROUP BY s.customer_id, s.product_id, product_name
@@ -71,7 +72,8 @@ AS
 WITH join_order
 AS
 (
-SELECT s.customer_id, order_date, join_date, s.product_id, product_name, RANK() OVER(PARTITION BY s.customer_id ORDER BY s.order_date) AS rank
+SELECT s.customer_id, order_date, join_date, s.product_id, product_name, 
+       RANK() OVER(PARTITION BY s.customer_id ORDER BY s.order_date) AS rank
   FROM DannySQLChallenge1.. sales AS s
   JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
   JOIN DannySQLChallenge1..members AS mr ON s.customer_id = mr.customer_id
@@ -89,7 +91,8 @@ SELECT s.customer_id, order_date, join_date, s.product_id, product_name, RANK() 
  WITH join_order
 AS
 (
-SELECT s.customer_id, order_date, join_date, s.product_id, product_name, RANK() OVER(PARTITION BY s.customer_id ORDER BY s.order_date) AS rank
+SELECT s.customer_id, order_date, join_date, s.product_id, product_name, 
+       RANK() OVER(PARTITION BY s.customer_id ORDER BY s.order_date) AS rank
   FROM DannySQLChallenge1.. sales AS s
   JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
   JOIN DannySQLChallenge1..members AS mr ON s.customer_id = mr.customer_id
@@ -121,10 +124,10 @@ WITH points
 AS(
 SELECT *,
 	  CASE 
-		  WHEN LOWER(product_name) LIKE '%sushi%'
-		  THEN price * 20
-		  ELSE price * 10
-		  END AS points
+	      WHEN LOWER(product_name) LIKE '%sushi%'
+	      THEN price * 20
+	      ELSE price * 10
+	      END AS points
 FROM DannySQLChallenge1..menu
 )
 
@@ -146,12 +149,12 @@ jan_sales
 AS
 (
 SELECT ld.customer_id,
-	   CASE
-			   WHEN LOWER(product_name) LIKE 'sushi' THEN 2*10*price
-			   WHEN order_date BETWEEN join_date AND loyalty_period THEN 2*10*price
-			   ELSE 10*price
-			   END
-			   AS points
+       CASE
+	   WHEN LOWER(product_name) LIKE 'sushi' THEN 2*10*price
+	   WHEN order_date BETWEEN join_date AND loyalty_period THEN 2*10*price
+	   ELSE 10*price
+	   END
+	   AS points
   FROM loyalty_dates AS ld
   JOIN DannySQLChallenge1..sales AS s ON ld.customer_id = s.customer_id
   JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
