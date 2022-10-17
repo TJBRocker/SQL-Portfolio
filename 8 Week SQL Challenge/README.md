@@ -13,7 +13,7 @@ The full challenge can be found [HERE](https://8weeksqlchallenge.com/), but esse
 
 ![image](https://user-images.githubusercontent.com/59825363/196279158-e8ad6ecc-f993-42a5-a6ca-840cf5d99c59.png)
 
-[MY SOLUTION[(https://github.com/TJBRocker/SQL-Portfolio/blob/main/8%20Week%20SQL%20Challenge/Case%20Study%20%231%20-%20Danny's%20Diner/Solution.md)
+[MY SOLUTION](https://github.com/TJBRocker/SQL-Portfolio/blob/main/8%20Week%20SQL%20Challenge/Case%20Study%20%231%20-%20Danny's%20Diner/Solution.md)
 
 ### Task
 Danny seriously loves Japanese food so in the beginning of 2021, he decides to embark upon a risky venture and opens up a cute little restaurant that sells his 3 favourite foods: sushi, curry and ramen.
