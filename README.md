@@ -19,3 +19,5 @@ Through these study methods I've found myself using SQLite, MySQL and MS SQL Ser
 
 ## 8 Week SQL challenge
 ***
+
+Following numerous Data gurus on all platforms led me to [Danny Ma's](https://www.linkedin.com/in/datawithdanny) SQL challenge, the [8 Week SQL Challenge](https://8weeksqlchallenge.com/)
