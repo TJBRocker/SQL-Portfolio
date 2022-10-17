@@ -7,4 +7,14 @@ I started my initial journey via the SQL journey path on [dataquest](https://www
 
 Through these study methods I've found myself using SQLite, MySQL and MS SQL Server, learning a number of different techniques and functions notably:
 
+- Aggregate functions
+- Joins
+- CASE
+- CTEs
+- Window functions
+- Subqueries
+- DATETIME
+- Data cleaning
+- and much more!
+
 
