@@ -141,6 +141,13 @@ SELECT s.customer_id, order_date, join_date, s.product_id, product_name,
   WHERE rank = 1
 ````
 
+| customer_id | product_name |
+| ----------- | ----------  |
+| A           |  sushi       |
+| A           |  curry       |
+| B           |  curry       |
+
+
 ### 8.  What is the total items and amount spent for each member before they became a member?
 
 ````sql
@@ -150,9 +157,12 @@ SELECT s.customer_id, order_date, join_date, s.product_id, product_name,
     JOIN DannySQLChallenge1..members AS mr ON s.customer_id = mr.customer_id
    WHERE s.order_date < mr.join_date
 GROUP BY s.customer_id
-
-
 ````
+| customer_id | total_bought | total_sales |
+| ----------- | ---------- |----------  |
+| A           | 2 |  25       |
+| B           | 3 |  40       |
+
 
 ### 9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 
@@ -173,6 +183,12 @@ SELECT s.customer_id, SUM(points) AS total_points
   JOIN points AS m on s.product_id = m.product_id
 GROUP BY s.customer_id
 ````
+
+| customer_id | total_points | 
+| ----------- | ---------- |
+| A           | 860 |
+| B           | 940 |
+| C           | 360 |
 
 ### 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
 
@@ -202,7 +218,38 @@ SELECT customer_id, SUM(points) AS jan_points
   FROM jan_sales
 GROUP BY customer_id;
 ````
-
+| customer_id | jan_points | 
+| ----------- | ---------- |
+| A           | 1370 |
+| B           | 820 |
 
 ## Bonus Questions
+
+SELECT s.customer_id, order_date, product_name, price,
+	   CASE
+			WHEN order_date > join_date THEN 'Y'
+			ELSE 'N'
+			END
+			AS member
+  FROM DannySQLChallenge1..sales AS s
+ LEFT JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
+ LEFT JOIN DannySQLChallenge1..members AS mb ON mb.customer_id = s.customer_id
+ 
+ | customer_id | order_date | product_name | price | member |
+| ----------- | ---------- | -------------| ----- | ------ |
+| A           | 2021-01-01 | sushi        | 10    | N      |
+| A           | 2021-01-01 | curry        | 15    | N      |
+| A           | 2021-01-07 | curry        | 15    | Y      |
+| A           | 2021-01-10 | ramen        | 12    | Y      |
+| A           | 2021-01-11 | ramen        | 12    | Y      |
+| A           | 2021-01-11 | ramen        | 12    | Y      |
+| B           | 2021-01-01 | curry        | 15    | N      |
+| B           | 2021-01-02 | curry        | 15    | N      |
+| B           | 2021-01-04 | sushi        | 10    | N      |
+| B           | 2021-01-11 | sushi        | 10    | Y      |
+| B           | 2021-01-16 | ramen        | 12    | Y      |
+| B           | 2021-02-01 | ramen        | 12    | Y      |
+| C           | 2021-01-01 | ramen        | 12    | N      |
+| C           | 2021-01-01 | ramen        | 12    | N      |
+| C           | 2021-01-07 | ramen        | 12    | N      |
 
