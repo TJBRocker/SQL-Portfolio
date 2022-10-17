@@ -27,11 +27,25 @@ Danny wants to use the data to answer a few simple questions about his customers
 
 ![image](https://user-images.githubusercontent.com/59825363/196279299-8c5b00b1-80a3-4d30-b169-00835449c228.png)
 
+### Task
+
+
+
+### Entity Relationship Diagram
+
+
 ---
 
 ## Case Study #3 - Foodie-Fi:
 
 ![image](https://user-images.githubusercontent.com/59825363/196279368-adc19fa7-3464-49a5-86cc-cab984fa5045.png)
+
+### Task
+
+
+
+### Entity Relationship Diagram
+
 
 ---
 
@@ -45,11 +59,25 @@ Danny wants to use the data to answer a few simple questions about his customers
 
 ![image](https://user-images.githubusercontent.com/59825363/196279535-0af81f3b-e8fc-45ac-a67b-f4380bd4fa17.png)
 
+### Task
+
+
+
+### Entity Relationship Diagram
+
+
 ---
 
 ## Case Study #6 - Clique Bait:
 
 ![image](https://user-images.githubusercontent.com/59825363/196279617-ae5e107b-6854-40e7-a7a5-fe9d5aca92ba.png)
+
+### Task
+
+
+
+### Entity Relationship Diagram
+
 
 ---
 
@@ -57,11 +85,24 @@ Danny wants to use the data to answer a few simple questions about his customers
 
 ![image](https://user-images.githubusercontent.com/59825363/196279707-16808857-f6e5-4931-a7f8-891424d80ccc.png)
 
+### Task
+
+
+
+### Entity Relationship Diagram
+
+
 ---
 
 ## Case Study #8 - Fresh Segments:
 
 ![image](https://user-images.githubusercontent.com/59825363/196279798-367b1cb0-bea6-4b8a-8ae1-910bb8248eab.png)
+
+### Task
+
+
+
+### Entity Relationship Diagram
 
 
 ---
