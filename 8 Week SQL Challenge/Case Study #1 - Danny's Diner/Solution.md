@@ -225,13 +225,13 @@ GROUP BY customer_id;
 
 ## Bonus Questions
 ````sql
-SELECT s.customer_id, order_date, product_name, price,
-	   CASE
-			WHEN order_date > join_date THEN 'Y'
-			ELSE 'N'
-			END
-			AS member
-  FROM DannySQLChallenge1..sales AS s
+     SELECT s.customer_id, order_date, product_name, price,
+	    CASE
+		WHEN order_date > join_date THEN 'Y'
+		ELSE 'N'
+		END
+		AS member
+      FROM DannySQLChallenge1..sales AS s
  LEFT JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
  LEFT JOIN DannySQLChallenge1..members AS mb ON mb.customer_id = s.customer_id
  ````
