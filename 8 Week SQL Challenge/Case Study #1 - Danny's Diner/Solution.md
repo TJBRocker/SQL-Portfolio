@@ -224,7 +224,7 @@ GROUP BY customer_id;
 | B           | 820 |
 
 ## Bonus Questions
-
+````sql
 SELECT s.customer_id, order_date, product_name, price,
 	   CASE
 			WHEN order_date > join_date THEN 'Y'
@@ -234,6 +234,7 @@ SELECT s.customer_id, order_date, product_name, price,
   FROM DannySQLChallenge1..sales AS s
  LEFT JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
  LEFT JOIN DannySQLChallenge1..members AS mb ON mb.customer_id = s.customer_id
+ ````
  
  | customer_id | order_date | product_name | price | member |
 | ----------- | ---------- | -------------| ----- | ------ |
