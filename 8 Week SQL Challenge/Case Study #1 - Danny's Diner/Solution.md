@@ -7,18 +7,18 @@ Each of the following case study questions can be answered using a single SQL st
 ### 1.  What is the total amount each customer spent at the restaurant?
 
 ````sql
-SELECT customer_id, SUM(price) AS total_sales
-  FROM DannySQLChallenge1..sales AS s
-  JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
+  SELECT customer_id, SUM(price) AS total_sales
+    FROM DannySQLChallenge1..sales AS s
+    JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
 GROUP BY customer_id
 ````
 
 ### 2.  How many days has each customer visited the restaurant?
 
 ````sql
-
-
-
+  SELECT customer_id, COUNT(DISTINCT order_date) AS visits
+    FROM DannySQLChallenge1..sales AS s
+GROUP BY customer_id
 ````
 
 ### 3.  What was the first item from the menu purchased by each customer?
