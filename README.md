@@ -17,5 +17,5 @@ Through these study methods I've found myself using SQLite, MySQL and MS SQL Ser
 - Data cleaning
 - and much more!
 
-*** 8 Week SQL challenge
-
+## 8 Week SQL challenge
+***
