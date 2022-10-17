@@ -10,7 +10,12 @@ The full challenge can be found [HERE](https://8weeksqlchallenge.com/), but esse
 
 ## Case Study #1: Danny's Diner:
 
-![image](https://user-images.githubusercontent.com/59825363/196279158-e8ad6ecc-f993-42a5-a6ca-840cf5d99c59.png, width="500" height="520")
+![image](https://user-images.githubusercontent.com/59825363/196279158-e8ad6ecc-f993-42a5-a6ca-840cf5d99c59.png)
+
+### Task
+
+Danny wants to use the data to answer a few simple questions about his customers, especially about their visiting patterns, how much money they’ve spent and also which menu items are their favourite. Having this deeper connection with his customers will help him deliver a better and more personalised experience for his loyal customers.
+
 
 ---
 
