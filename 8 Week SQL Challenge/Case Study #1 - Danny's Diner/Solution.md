@@ -12,6 +12,12 @@ Each of the following case study questions can be answered using a single SQL st
     JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
 GROUP BY customer_id
 ````
+| customer_id | total_sales |
+| ----------- | ----------- |
+| A           | 76          |
+| B           | 74          |
+| C           | 36          |
+
 
 ### 2.  How many days has each customer visited the restaurant?
 
