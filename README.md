@@ -9,11 +9,11 @@ Through these study methods I've found myself using SQLite, MySQL and MS SQL Ser
 
 - Aggregate functions
 - Joins
-- CASE
+- CASE statements
 - CTEs
 - Window functions
 - Subqueries
-- DATETIME
+- date functions
 - Data cleaning
 - and much more!
 
