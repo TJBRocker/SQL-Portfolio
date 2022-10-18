@@ -6,6 +6,9 @@ I've been practising SQL a while through different courses and books and this is
 
 The full challenge can be found [HERE](https://8weeksqlchallenge.com/), but essentially is broken into a number of different scenarios with varied level of difficulty within each of the challenges.
 
+My solutions can be found here:
+- [Case Study #1: Danny's Diner](https://github.com/TJBRocker/SQL-Portfolio/blob/main/8%20Week%20SQL%20Challenge/Case%20Study%20%231%20-%20Danny's%20Diner/Solution.md)
+
 
 ---
 
