@@ -166,7 +166,16 @@ SELECT COUNT(*) AS immediate_churn_count,
 
 ### 6.  What is the number and percentage of customer plans after their initial free trial?
 
+Similar to the question above, this involved me using a window function, in this case `LEAD`. This technique allows the user to choose a number of values ahead in a chosen column, depending on partitioning.
 
+The make up of my soultion is as follows:
+
+-	A CTE containing a `LEAD` window function chooses the subsequent `plan_name` and `plan_id`
+-	Using the CTE I
+	- Filter on initial 'plan_id' by the trial plan
+	- `GROUP BY` the new plan
+	- `COUNT` the new plans
+	- Determine a percentage of new plan from the overal customer population via a subquery
 
 ````sql
 WITH new_plan
@@ -199,6 +208,8 @@ ORDER BY new_plan_id, new_plan
 |churn|	92|	9.2|
 
 ### 7.  What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
+
+Another window function! This question had me stumped for a little while. I realised however, by ranking each plan but this time by date descending, I could determine the current plan for each customer. From there I simplying had to filter on this value and do some counting!
 
 ````sql
 WITH current_plan
@@ -234,6 +245,8 @@ ORDER BY plan_id, plan_name
 
 ### 8.  How many customers have upgraded to an annual plan in 2020?
 
+Fairly straightforward filtering and aggregation example, especially in comparison to the last few questions!
+
 ````sql
 SELECT pl.plan_name, 
        COUNT(*) AS plan_count
@@ -247,6 +260,14 @@ GROUP BY pl.plan_id, pl.plan_name
 |pro annual|	195|
 
 ### 9.  How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
+
+This solution is broken down as follows:
+-	Two CTE's, determine the two plan groups
+	-	The first is a table of customers on trial plans and their `start_date`
+	-	The second a table of customers on the annual plan and their new `start_date` or the date at which they converted to a annual plan.
+-	A inner join of the two CTEs, in order for all customers to be joined who over time period are both a trial user and one who later converted to a annual plan
+-	Finally using `DATEDIFF` to calculate the average difference
+-	I looked at the question ahead and determined the minimum and maximum days also so I can create the buckets required for that problem.
 
 ````sql
 WITH trial_period 
@@ -271,7 +292,10 @@ SELECT AVG(DATEDIFF(day,tp.start_date,ap.annual_purch_date)) AS avg_plan_convers
 |avg_plan_conversion|min_conversion|max_conversion|
 |-------|-------|-------|
 |104|	7|	346|
+
 ### 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
+
+I'm convinced there's an easier way, but I haven't figured one out yet so I created a large `CASE` statement to answer the problem.
 
 ````sql
 WITH trial_period 
@@ -338,6 +362,9 @@ ORDER BY upgrade_days_breakdown
 
 ### 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 
+this problem was similar to Q6 and the I was able to use that intuition to complete.
+
+
 ````sql
 WITH plan_analysis
 AS(
@@ -358,6 +385,7 @@ SELECT COUNT(*) AS number_downgraded
        AND DATEPART(year, start_date) = 2000 
        AND DATEPART(year, new_start_date) = 2000
 ````
+This was a surprising answer, and at first I was convinced it was incorrect!
 
 |number_downgraded|
 |-------|
