@@ -69,7 +69,25 @@ Started by extracting the datepart and name from the start date to allow me to g
 GROUP BY DATEPART(month, start_date), DATENAME(month, start_date)
 ORDER BY month_num, month
 ````
-### 3.  What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name
+|customer_id|plan_id|start_date|
+|-------|-------|-------|
+|1|	January|88|
+|2|	February|68|
+|3|	March	|94|
+|4|	April	|81|
+|5|	May	|88|
+|6|	June	|79|
+|7|	July	|89|
+|8|	August	|88|
+|9|	September|87|
+|10|	October	|79|
+|11|	November|75|
+|12|	December|84|
+
+
+### 3.  What plan `start_date` values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name
+
+
 ````sql
 SELECT pl.plan_name, 
        COUNT(*) AS plan_count
@@ -79,6 +97,7 @@ SELECT pl.plan_name,
 GROUP BY pl.plan_id, pl.plan_name
 ````
 ### 4.  What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
+
 ````sql
 SELECT COUNT(*) AS churn_count,
        ROUND(100.0 * COUNT(*) / 
@@ -90,6 +109,7 @@ SELECT COUNT(*) AS churn_count,
  WHERE plan_name = 'Churn'
 ````
 ### 5.  How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
+
 ````sql
 WITH churn_table AS
 (
@@ -111,6 +131,7 @@ SELECT COUNT(*) AS immediate_churn_count,
  WHERE plan_name = 'churn' AND rank = 2
 ````
 ### 6.  What is the number and percentage of customer plans after their initial free trial?
+
 ````sql
 WITH new_plan
 AS(
@@ -135,6 +156,7 @@ GROUP BY new_plan_id, new_plan
 ORDER BY new_plan_id, new_plan
 ````
 ### 7.  What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
+
 ````sql
 WITH current_plan
 AS(
@@ -159,7 +181,9 @@ SELECT customer_id,
 GROUP BY plan_id, plan_name
 ORDER BY plan_id, plan_name
 ````
+
 ### 8.  How many customers have upgraded to an annual plan in 2020?
+
 ````sql
 SELECT pl.plan_name, 
        COUNT(*) AS plan_count
@@ -168,7 +192,9 @@ SELECT pl.plan_name,
  WHERE DATEPART(year,start_date) = 2020 AND plan_name LIKE '%annual%'
 GROUP BY pl.plan_id, pl.plan_name
 ````
+
 ### 9.  How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
+
 ````sql
 WITH trial_period 
 AS(
@@ -189,7 +215,9 @@ SELECT AVG(DATEDIFF(day,tp.start_date,ap.annual_purch_date)) AS avg_plan_convers
   FROM annual_plans AS ap
   JOIN trial_period AS tp on tp.customer_id = ap.customer_id
 ````
+
 ### 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
+
 ````sql
 WITH trial_period 
 AS(
@@ -237,7 +265,9 @@ SELECT TRIM(SUBSTRING(upgrade_days_breakdown,3,LEN(upgrade_days_breakdown))) AS 
 GROUP BY upgrade_days_breakdown
 ORDER BY upgrade_days_breakdown
 ````
+
 ### 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
+
 ````sql
 WITH plan_analysis
 AS(
