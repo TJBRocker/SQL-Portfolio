@@ -88,6 +88,7 @@ ORDER BY month_num, month
 
 ### 3.  What plan `start_date` values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name
 
+Required me to aggregate a `COUNT` based on the `plan_name`, but filtering on the year 2020 using the `DATEPART` function
 
 ````sql
 SELECT pl.plan_name, 
@@ -106,6 +107,8 @@ GROUP BY pl.plan_id, pl.plan_name
 
 ### 4.  What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 
+This question required me to use a subquery in order to produce a percentage of churn agaisnt total count.
+
 ````sql
 SELECT COUNT(*) AS churn_count,
        ROUND(100.0 * COUNT(*) / 
@@ -122,6 +125,20 @@ SELECT COUNT(*) AS churn_count,
 |307|30.7|
 
 ### 5.  How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
+
+This is now where the challenge started to ramp up in difficulty, requiring me to think before committing to code!
+
+Thought process behind this was:
+-	I needed to determine the different steps in customers behaviours 
+-	From there I could then filter on the second 
+-	I would also have to use a subquery, similar to the above example to determine the percentage
+
+How I did this!
+-	I produced a CTE including `ROW_NUMBER` window function paritioned by the `customer_id` ordered by date ascending.
+	- By doing this ranks the customers progression through different plans
+-	I was then able to filter on the CTE by `plan_name` *churn* and `rank` *2*
+	- This is filtering on customers who after their trial then progressed to churn on their account
+
 
 ````sql
 WITH churn_table AS
@@ -148,6 +165,8 @@ SELECT COUNT(*) AS immediate_churn_count,
 |92|9|
 
 ### 6.  What is the number and percentage of customer plans after their initial free trial?
+
+
 
 ````sql
 WITH new_plan
