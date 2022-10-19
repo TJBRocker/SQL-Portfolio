@@ -44,12 +44,21 @@ SELECT TOP 5 customer_id, sub.plan_id, pl.plan_name, start_date, price
 
 
 ### 1.  How many customers has Foodie-Fi ever had?
+
+Fairly straightforward start requiring me to count the distinct customers from the subscriptions list
+
 ````sql
 SELECT COUNT(DISTINCT customer_id) AS total_customers
   FROM DannySQLChallenge3..subscriptions
 ````
+|total_customers|
+|-------|
+|1000|
 
 ### 2.  What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
+
+Started by extracting the datepart and name from the start date to allow me to group the month values togetherm before then counting the number of distinct customers
+
 ````sql
   SELECT DATEPART(month, start_date) AS month_num,
 	 DATENAME(month, start_date) AS month,
@@ -58,7 +67,7 @@ SELECT COUNT(DISTINCT customer_id) AS total_customers
     JOIN DannySQLChallenge3..plans AS pl ON sub.plan_id=pl.plan_id
    WHERE sub.plan_id = 0
 GROUP BY DATEPART(month, start_date), DATENAME(month, start_date)
-ORDER BY 1
+ORDER BY month_num, month
 ````
 ### 3.  What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name
 ````sql
