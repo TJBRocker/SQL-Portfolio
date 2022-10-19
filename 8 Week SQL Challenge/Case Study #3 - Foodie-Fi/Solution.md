@@ -5,6 +5,18 @@ This case study is split into an initial data understanding question before divi
 
 ### Data Analysis Questions:
 
+Initially I like to start off by viewing the tables, and in this instance joining them together to see what the data looks like:
+````sql
+SELECT *
+  FROM DannySQLChallenge3..plans
+
+SELECT *
+  FROM DannySQLChallenge3..subscriptions
+
+SELECT customer_id, sub.plan_id, pl.plan_name, start_date, price
+  FROM DannySQLChallenge3..subscriptions AS sub
+  JOIN DannySQLChallenge3..plans AS pl ON sub.plan_id=pl.plan_id
+````
 1.  How many customers has Foodie-Fi ever had?
 ````sql
 SELECT
