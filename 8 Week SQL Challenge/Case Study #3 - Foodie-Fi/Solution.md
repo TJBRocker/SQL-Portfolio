@@ -17,6 +17,15 @@ SELECT customer_id, sub.plan_id, pl.plan_name, start_date, price
   FROM DannySQLChallenge3..subscriptions AS sub
   JOIN DannySQLChallenge3..plans AS pl ON sub.plan_id=pl.plan_id
 ````
+
+|plan_id|plan_name|price|
+|-|-|-|
+|1|	basic monthly|	9.90
+|2|	pro monthly|	19.90
+|3|	pro annual|	199.00
+|4|	churn|	NULL
+
+
 1.  How many customers has Foodie-Fi ever had?
 ````sql
 SELECT
