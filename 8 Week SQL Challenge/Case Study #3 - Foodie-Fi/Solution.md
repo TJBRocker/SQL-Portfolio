@@ -6,6 +6,7 @@ This case study is split into an initial data understanding question before divi
 ## Data Analysis Questions:
 
 Initially I like to start off by viewing the tables, and in this instance joining them together to see what the data looks like:
+
 ````sql
 SELECT *
   FROM DannySQLChallenge3..plans
@@ -55,7 +56,7 @@ SELECT COUNT(DISTINCT customer_id) AS total_customers
 |-------|
 |1000|
 
-### 2.  What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
+### 2.  What is the monthly distribution of trial plan `start_date` values for our dataset - use the start of the month as the group by value
 
 Started by extracting the datepart and name from the start date to allow me to group the month values togetherm before then counting the number of distinct customers
 
@@ -96,6 +97,13 @@ SELECT pl.plan_name,
  WHERE DATEPART(year,start_date) > 2020
 GROUP BY pl.plan_id, pl.plan_name
 ````
+|plan_name|plan_count|
+|-------|-------|
+|basic monthly	|8|
+|churn	|71|
+|pro annual|63|
+|pro monthly|60|
+
 ### 4.  What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
 
 ````sql
@@ -108,6 +116,11 @@ SELECT COUNT(*) AS churn_count,
   JOIN DannySQLChallenge3..plans AS pl ON sub.plan_id=pl.plan_id
  WHERE plan_name = 'Churn'
 ````
+
+|churn_count|churn_percentage|
+|-------|-------|
+|307|30.7|
+
 ### 5.  How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
 
 ````sql
@@ -130,6 +143,10 @@ SELECT COUNT(*) AS immediate_churn_count,
   FROM churn_table
  WHERE plan_name = 'churn' AND rank = 2
 ````
+|immediate_churn_count|immediate_churn_percentage|
+|-------|-------|
+|92|9|
+
 ### 6.  What is the number and percentage of customer plans after their initial free trial?
 
 ````sql
@@ -148,13 +165,20 @@ SELECT customer_id,
 SELECT new_plan, 
        COUNT(*) AS plan_count,
        ROUND(100.0 * COUNT(*) / (SELECT COUNT(DISTINCT customer_id) 
-                                   FROM DannySQLChallenge3..subscriptions),2)
+                                   FROM DannySQLChallenge3..subscriptions),1)
                                  AS conversion_percentage
   FROM new_plan
  WHERE plan_id = 0
 GROUP BY new_plan_id, new_plan
 ORDER BY new_plan_id, new_plan
 ````
+|new_plan|plan_count|conversion_percentage|
+|-------|-------|-------|
+|basic monthly|	546|	54.6|
+|pro monthly|	325|	32.5|
+|pro annual|	37|	3.7|
+|churn|	92|	9.2|
+
 ### 7.  What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?
 
 ````sql
@@ -181,6 +205,13 @@ SELECT customer_id,
 GROUP BY plan_id, plan_name
 ORDER BY plan_id, plan_name
 ````
+|plan_name|plan_count|percentage|
+|-------|-------|-------|
+|trial|	19|	1.9|
+|basic monthly|	224|	22.4|
+|pro monthly|	326|	32.6|
+|pro annual|	195|	19.5|
+|churn|	236|	23.6|
 
 ### 8.  How many customers have upgraded to an annual plan in 2020?
 
@@ -192,6 +223,9 @@ SELECT pl.plan_name,
  WHERE DATEPART(year,start_date) = 2020 AND plan_name LIKE '%annual%'
 GROUP BY pl.plan_id, pl.plan_name
 ````
+|plan_name|plan_count|
+|-------|-------|
+|pro annual|	195|
 
 ### 9.  How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
 
@@ -215,7 +249,9 @@ SELECT AVG(DATEDIFF(day,tp.start_date,ap.annual_purch_date)) AS avg_plan_convers
   FROM annual_plans AS ap
   JOIN trial_period AS tp on tp.customer_id = ap.customer_id
 ````
-
+|avg_plan_conversion|min_conversion|max_conversion|
+|-------|-------|-------|
+|104|	7|	346|
 ### 10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
 
 ````sql
@@ -252,7 +288,7 @@ SELECT CASE
 	   WHEN upgrade_days BETWEEN 211 AND 240 THEN 'h. 211 - 240 days'
 	   WHEN upgrade_days BETWEEN 241 AND 270 THEN 'i. 241 - 270 days'
 	   WHEN upgrade_days BETWEEN 271 AND 300 THEN 'j. 271 - 300 days'
-	   WHEN upgrade_days BETWEEN 301 AND 300 THEN 'k. 301 - 330 days'
+	   WHEN upgrade_days BETWEEN 301 AND 330 THEN 'k. 301 - 330 days'
 	   WHEN upgrade_days BETWEEN 331 AND 360 THEN 'l. 331 - 360 days'
 	   WHEN upgrade_days >= 360 THEN 'm. 360+ days'
 	   END AS upgrade_days_breakdown
@@ -265,6 +301,21 @@ SELECT TRIM(SUBSTRING(upgrade_days_breakdown,3,LEN(upgrade_days_breakdown))) AS 
 GROUP BY upgrade_days_breakdown
 ORDER BY upgrade_days_breakdown
 ````
+
+|analysis|count|
+|-------|-------|
+|0 - 30 days|	49|
+|31 - 60 days|	24|
+|61 - 90 days|	34|
+|91 - 120 days|	35|
+|121 - 150 days|	42|
+|151 - 180 days|	36|
+|181 - 210 days|	26|
+|211 - 240 days|	4|
+|241 - 270 days|	5|
+|271 - 300 days|	1|
+|301 - 330 days|	1|
+|331 - 360 days|	1|
 
 ### 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 
@@ -288,3 +339,7 @@ SELECT COUNT(*) AS number_downgraded
        AND DATEPART(year, start_date) = 2000 
        AND DATEPART(year, new_start_date) = 2000
 ````
+
+|number_downgraded|
+|-------|
+|0 |
