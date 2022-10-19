@@ -7,7 +7,8 @@ Each of the following case study questions can be answered using a single SQL st
 ### 1.  What is the total amount each customer spent at the restaurant?
 
 ````sql
-  SELECT customer_id, SUM(price) AS total_sales
+  SELECT customer_id, 
+  	 SUM(price) AS total_sales
     FROM DannySQLChallenge1..sales AS s
     JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
 GROUP BY customer_id
@@ -18,11 +19,11 @@ GROUP BY customer_id
 | B           | 74          |
 | C           | 36          |
 
-
 ### 2.  How many days has each customer visited the restaurant?
 
 ````sql
-  SELECT customer_id, COUNT(DISTINCT order_date) AS visits
+  SELECT customer_id, 
+  	 COUNT(DISTINCT order_date) AS visits
     FROM DannySQLChallenge1..sales AS s
 GROUP BY customer_id
 ````
@@ -37,14 +38,18 @@ GROUP BY customer_id
 
 ### 3.  What was the first item from the menu purchased by each customer?
 
+Using a CTE and `RANK` window function we're able to determine the first item bought by each customer.
+
 ````sql
 WITH food_ordering AS
 (
-SELECT *, RANK() OVER (PARTITION BY customer_ID ORDER BY order_date) AS rank
+SELECT *, 
+       RANK() OVER (PARTITION BY customer_ID ORDER BY order_date) AS rank
   FROM DannySQLChallenge1..sales AS s
 )
 
-  SELECT customer_id, product_name
+  SELECT customer_id, 
+  	 product_name
     FROM food_ordering AS s
     JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
    WHERE rank = 1
@@ -60,7 +65,8 @@ GROUP BY customer_id, product_name
 ### 4.  What is the most purchased item on the menu and how many times was it purchased by all customers?
 
 ````sql
-  SELECT TOP 1 COUNT(s.product_id) AS item_sales, m.product_name
+  SELECT TOP 1 COUNT(s.product_id) AS item_sales, 
+  	 m.product_name
     FROM DannySQLChallenge1..sales AS s
     JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
 GROUP BY s.product_id, product_name
@@ -78,7 +84,9 @@ ORDER BY item_sales DESC
 WITH cust_menu_item_rank
 AS
 (
-   SELECT s.customer_id, m.product_name, COUNT(s.product_id) AS sales, 
+   SELECT s.customer_id, 
+   	  m.product_name, 
+	  COUNT(s.product_id) AS sales, 
    	  RANK() OVER(PARTITION BY s.customer_id ORDER BY COUNT(s.product_id) DESC) AS rank
      FROM DannySQLChallenge1..sales AS s
      JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
@@ -104,7 +112,11 @@ AS
 WITH join_order
 AS
 (
-SELECT s.customer_id, order_date, join_date, s.product_id, product_name, 
+SELECT s.customer_id, 
+       order_date, 
+       join_date, 
+       s.product_id, 
+       product_name, 
        RANK() OVER(PARTITION BY s.customer_id ORDER BY s.order_date) AS rank
   FROM DannySQLChallenge1.. sales AS s
   JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
@@ -122,13 +134,18 @@ SELECT s.customer_id, order_date, join_date, s.product_id, product_name,
 | A           |  curry       |
 | B           |  sushi       |
 
+
 ### 7.  Which item was purchased just before the customer became a member?
 
 ````sql
  WITH join_order
 AS
 (
-SELECT s.customer_id, order_date, join_date, s.product_id, product_name, 
+SELECT s.customer_id, 
+       order_date, 
+       join_date, 
+       s.product_id, 
+       product_name, 
        RANK() OVER(PARTITION BY s.customer_id ORDER BY s.order_date) AS rank
   FROM DannySQLChallenge1.. sales AS s
   JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
@@ -151,7 +168,9 @@ SELECT s.customer_id, order_date, join_date, s.product_id, product_name,
 ### 8.  What is the total items and amount spent for each member before they became a member?
 
 ````sql
-  SELECT s.customer_id, COUNT(s.customer_id) AS total_bought, SUM(price) AS total_sales
+  SELECT s.customer_id, 
+  	 COUNT(s.customer_id) AS total_bought, 
+	 SUM(price) AS total_sales
     FROM DannySQLChallenge1..sales AS s
     JOIN DannySQLChallenge1..menu AS m ON s.product_id = m.product_id
     JOIN DannySQLChallenge1..members AS mr ON s.customer_id = mr.customer_id
@@ -170,11 +189,11 @@ GROUP BY s.customer_id
 WITH points
 AS(
 SELECT *,
-	  CASE 
-	      WHEN LOWER(product_name) LIKE '%sushi%'
-	      THEN price * 20
-	      ELSE price * 10
-	      END AS points
+       CASE 
+	   WHEN LOWER(product_name) LIKE '%sushi%'
+	   THEN price * 20
+	   ELSE price * 10
+	   END AS points
 FROM DannySQLChallenge1..menu
 )
 
@@ -195,7 +214,9 @@ GROUP BY s.customer_id
 ````sql
 WITH loyalty_dates AS
 (
-SELECT *, DATEADD(DAY,6,join_date) AS loyalty_period, EOMONTH('2021-01-31') AS end_date
+SELECT *, 
+	DATEADD(DAY,6,join_date) AS loyalty_period, 
+	EOMONTH('2021-01-31') AS end_date
   FROM DannySQLChallenge1..members
 ),
 jan_sales
@@ -214,7 +235,8 @@ SELECT ld.customer_id,
  WHERE order_date BETWEEN '2021-01-01' AND '2021-01-31'
 )
 
-SELECT customer_id, SUM(points) AS jan_points
+SELECT customer_id, 
+       SUM(points) AS jan_points
   FROM jan_sales
 GROUP BY customer_id;
 ````
@@ -225,7 +247,10 @@ GROUP BY customer_id;
 
 ## Bonus Questions
 ````sql
-     SELECT s.customer_id, order_date, product_name, price,
+     SELECT s.customer_id, 
+     	    order_date, 
+	    product_name, 
+	    price,
 	    CASE
 		WHEN order_date > join_date THEN 'Y'
 		ELSE 'N'
