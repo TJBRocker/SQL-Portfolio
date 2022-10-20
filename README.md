@@ -13,7 +13,7 @@ Through these study methods I've found myself using SQLite, MySQL and MS SQL Ser
 - CTEs
 - Window functions
 - Subqueries
-- date functions
+- Date functions
 - Data cleaning
 - and much more!
 
