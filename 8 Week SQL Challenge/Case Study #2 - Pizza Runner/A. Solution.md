@@ -25,7 +25,8 @@ SELECT COUNT(DISTINCT order_id) AS unique_orders
 ### 3.  How many successful orders were delivered by each runner?
 
 ````sql
-SELECT runner_id, COUNT(runner_id) AS successful_orders
+SELECT runner_id, 
+       COUNT(runner_id) AS successful_orders
   FROM DannySQLChallenge2..runner_order_new
  WHERE  distance <> ''
  GROUP BY runner_id
@@ -37,9 +38,10 @@ SELECT runner_id, COUNT(runner_id) AS successful_orders
 ### 4.  How many of each type of pizza was delivered?
 
 ````sql
-SELECT pn.pizza_name, COUNT(co.pizza_id) AS pizza_order_count
-  FROM DannySQLChallenge2..customer_orders AS co
-  JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
+  SELECT pn.pizza_name, 
+         COUNT(co.pizza_id) AS pizza_order_count
+    FROM DannySQLChallenge2..customer_orders AS co
+    JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
 GROUP BY pn.pizza_id, pn.pizza_name
 
 -- getting errors with datatype so will convert these to varchar
@@ -49,9 +51,10 @@ ALTER COLUMN pizza_name VARCHAR(50)
 
 -- Will now try rerunning the query
 
-SELECT pn.pizza_name, COUNT(co.pizza_id) AS pizza_order_count
-  FROM DannySQLChallenge2..customer_orders AS co
-  JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
+  SELECT pn.pizza_name, 
+	 COUNT(co.pizza_id) AS pizza_order_count
+    FROM DannySQLChallenge2..customer_orders AS co
+    JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
 GROUP BY pn.pizza_id, pn.pizza_name
 
 ````
@@ -61,9 +64,10 @@ GROUP BY pn.pizza_id, pn.pizza_name
 ### 5.  How many Vegetarian and Meatlovers were ordered by each customer?
 
 ````sql
-SELECT customer_id, pn.pizza_name, COUNT(co.pizza_id) AS pizza_order_count
-  FROM DannySQLChallenge2..customer_orders AS co
-  JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
+  SELECT customer_id, pn.pizza_name, 
+	 COUNT(co.pizza_id) AS pizza_order_count
+    FROM DannySQLChallenge2..customer_orders AS co
+    JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
 GROUP BY customer_id, pn.pizza_id, pn.pizza_name;
 
 ````
@@ -76,8 +80,9 @@ GROUP BY customer_id, pn.pizza_id, pn.pizza_name;
 ````sql
 WITH pizza_orders
 AS(
-SELECT order_id, COUNT(order_id) AS pizzas_per_order
-  FROM DannySQLChallenge2..customer_orders
+  SELECT order_id, 
+  	 COUNT(order_id) AS pizzas_per_order
+    FROM DannySQLChallenge2..customer_orders
 GROUP BY order_id
 )
 
@@ -91,12 +96,12 @@ SELECT max(pizzas_per_order) AS max_ordered
 ### 7.  For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 
 ````sql
-SELECT co.customer_id,
-	   SUM(CASE WHEN co.exclusions <> '' OR co.extras <> '' THEN 1 ELSE 0 END) AS pizza_changes,
-	   SUM(CASE WHEN co.exclusions = '' OR co.extras = '' THEN 1 ELSE 0 END) AS no_changes
-  FROM DannySQLChallenge2..customer_orders AS co
-  JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
-WHERE distance <> ''
+  SELECT co.customer_id,
+	 SUM(CASE WHEN co.exclusions <> '' OR co.extras <> '' THEN 1 ELSE 0 END) AS pizza_changes,
+	 SUM(CASE WHEN co.exclusions = '' OR co.extras = '' THEN 1 ELSE 0 END) AS no_changes
+    FROM DannySQLChallenge2..customer_orders AS co
+    JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
+   WHERE distance <> ''
 GROUP BY customer_id
 ````
 <img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197055151-66491012-4220-4bde-9bea-a272f4dfc3c5.png">
@@ -104,10 +109,11 @@ GROUP BY customer_id
 ### 8.  How many pizzas were delivered that had both exclusions and extras?
 
 ````sql
-SELECT co.order_id, COUNT(DISTINCT co.order_id) AS excl_extras
-  FROM DannySQLChallenge2..customer_orders AS co
-  JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
-WHERE distance <> '' AND exclusions <> '' AND extras <> ''
+  SELECT co.order_id, 
+	 COUNT(DISTINCT co.order_id) AS excl_extras
+    FROM DannySQLChallenge2..customer_orders AS co
+    JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
+   WHERE distance <> '' AND exclusions <> '' AND extras <> ''
 GROUP BY co.order_id
 ````
 <img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197055212-d643613b-f2b5-42c0-bbe8-89430e911179.png">
@@ -118,15 +124,17 @@ GROUP BY co.order_id
 ````sql
 -- Will include version where orders were and weren't cancelled
 
-SELECT COUNT(co.order_id) AS pizzas_ordered, DATEPART(HOUR, order_time) AS hour
-  FROM DannySQLChallenge2..customer_orders AS co
-  JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
-  WHERE distance <> ''
+   SELECT COUNT(co.order_id) AS pizzas_ordered, 
+	  DATEPART(HOUR, order_time) AS hour
+     FROM DannySQLChallenge2..customer_orders AS co
+     JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
+    WHERE distance <> ''
  GROUP BY DATEPART(HOUR, order_time)
 
- SELECT COUNT(co.order_id) AS pizzas_ordered, DATEPART(HOUR, order_time) AS hour
-  FROM DannySQLChallenge2..customer_orders AS co
-  JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
+   SELECT COUNT(co.order_id) AS pizzas_ordered, 
+ 	  DATEPART(HOUR, order_time) AS hour
+     FROM DannySQLChallenge2..customer_orders AS co
+     JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
  GROUP BY DATEPART(HOUR, order_time)
 ````
 
@@ -137,9 +145,11 @@ SELECT COUNT(co.order_id) AS pizzas_ordered, DATEPART(HOUR, order_time) AS hour
 
 ````sql
  SET datefirst 1;
- SELECT COUNT(co.order_id) AS pizzas_ordered, DATEPART(WEEKDAY, order_time) AS day_num, DATENAME(WEEKDAY, order_time) AS weekday
-  FROM DannySQLChallenge2..customer_orders AS co
-  JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
+   SELECT COUNT(co.order_id) AS pizzas_ordered, 
+ 	  DATEPART(WEEKDAY, order_time) AS day_num, 
+	  DATENAME(WEEKDAY, order_time) AS weekday
+     FROM DannySQLChallenge2..customer_orders AS co
+     JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
  GROUP BY DATEPART(WEEKDAY, order_time), DATENAME(WEEKDAY, order_time)
 ````
 <img width="270" alt="image" src="https://user-images.githubusercontent.com/59825363/197055773-d3fbb7e6-94ed-4406-93fd-390fe1da7e3e.png">
@@ -150,8 +160,9 @@ SELECT COUNT(co.order_id) AS pizzas_ordered, DATEPART(HOUR, order_time) AS hour
 
 ````sql
 SET datefirst 1;
-SELECT DATEPART(week,registration_date) AS start_week, COUNT(runner_id) AS runner_count
-  FROM DannySQLChallenge2..runners
+  SELECT DATEPART(week,registration_date) AS start_week, 
+  	 COUNT(runner_id) AS runner_count
+    FROM DannySQLChallenge2..runners
 GROUP BY DATEPART(week,registration_date)
 ````
 
@@ -162,14 +173,16 @@ GROUP BY DATEPART(week,registration_date)
 ````sql
 WITH time_taken AS
 (
-SELECT DISTINCT(ron.order_id),runner_id, DATEDIFF(MINUTE, order_time, pickup_time) AS pickup_time
+SELECT DISTINCT(ron.order_id),runner_id, 
+       DATEDIFF(MINUTE, order_time, pickup_time) AS pickup_time
   FROM DannySQLChallenge2..runner_order_new AS ron
   JOIN DannySQLChallenge2..customer_orders AS co ON co.order_id = ron.order_id
  WHERE cancellation = ''
 )
 
-SELECT runner_id, AVG(pickup_time) AS average_pickup
-  FROM time_taken
+  SELECT runner_id, 
+  	 AVG(pickup_time) AS average_pickup
+    FROM time_taken
 GROUP BY runner_id
 ````
 <img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197056427-c66460e1-1ba4-4716-b602-ee627ab04ff5.png">
@@ -178,10 +191,13 @@ GROUP BY runner_id
 ### 3.  Is there any relationship between the number of pizzas and how long the order takes to prepare?
 
 ````sql
-SELECT DISTINCT ron.order_id, runner_id, DATEDIFF(MINUTE, order_time, pickup_time) AS pickup_time, COUNT(co.pizza_id) AS pizza_count
-  FROM DannySQLChallenge2..runner_order_new AS ron
-  JOIN DannySQLChallenge2..customer_orders AS co ON co.order_id = ron.order_id
- WHERE cancellation = ''
+   SELECT DISTINCT ron.order_id, 
+   	  runner_id, 
+	  DATEDIFF(MINUTE, order_time, pickup_time) AS pickup_time, 
+	  COUNT(co.pizza_id) AS pizza_count
+     FROM DannySQLChallenge2..runner_order_new AS ron
+     JOIN DannySQLChallenge2..customer_orders AS co ON co.order_id = ron.order_id
+    WHERE cancellation = ''
  GROUP BY ron.order_id, runner_id, DATEDIFF(MINUTE, order_time, pickup_time)
 ````
 <img width="300" alt="image" src="https://user-images.githubusercontent.com/59825363/197057679-ff90ee82-b668-40ce-a091-7110781b86cc.png">
@@ -193,14 +209,17 @@ SELECT DISTINCT ron.order_id, runner_id, DATEDIFF(MINUTE, order_time, pickup_tim
 ````sql
 WITH distance_by_order
 AS(
-SELECT DISTINCT(co.order_id), co.customer_id, distance
+SELECT DISTINCT(co.order_id), 
+       co.customer_id, 
+       distance
   FROM DannySQLChallenge2..customer_orders AS co
   JOIN DannySQLChallenge2..runner_order_new AS ron ON ron.order_id=co.order_id 
  WHERE distance <> ''
 )
 
-SELECT customer_id, AVG(CAST(distance AS float)) AS average_distance
-FROM distance_by_order
+  SELECT customer_id, 
+  	 AVG(CAST(distance AS float)) AS average_distance
+    FROM distance_by_order
 GROUP BY customer_id
 ````
 
@@ -212,7 +231,7 @@ GROUP BY customer_id
 ````sql
 SELECT  MAX(CAST(duration AS float)) - MIN(CAST(duration AS float)) AS delivery_time_difference
   FROM DannySQLChallenge2..runner_order_new
-WHERE distance <> ''
+ WHERE distance <> ''
 ````
 
 <img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197058194-1c7370cc-8d6b-428d-8d6b-ad08f2ef3b7a.png">
@@ -223,13 +242,16 @@ WHERE distance <> ''
 ````sql
 WITH runner_speed
 AS(
-SELECT  runner_id, ron.order_id, ROUND(CAST(ron.distance AS float) / (CAST(ron.duration AS float)/60),2) AS avg_speed
+SELECT runner_id, ron.order_id, 
+       ROUND(CAST(ron.distance AS float) / (CAST(ron.duration AS float)/60),2) AS avg_speed
   FROM DannySQLChallenge2..runner_order_new AS ron
-WHERE distance <> ''
+ WHERE distance <> ''
 )
 
-SELECT runner_id, ROUND(AVG(avg_speed),2) AS avg_speed, MAX(avg_speed)-MIN(avg_speed) AS speed_variation
-  FROM runner_speed
+  SELECT runner_id, 
+  	 ROUND(AVG(avg_speed),2) AS avg_speed, 
+	 MAX(avg_speed)-MIN(avg_speed) AS speed_variation
+    FROM runner_speed
 GROUP BY runner_id
 ````
 
@@ -241,11 +263,11 @@ GROUP BY runner_id
 
 ````sql
 SELECT runner_id, 
-	   SUM(100*CASE 
-			WHEN distance = '' 
-				 THEN 0
-				 ELSE 1 
-				 END) / COUNT(*) AS success
+       SUM(100*CASE 
+		   WHEN distance = '' 
+		   THEN 0
+		   ELSE 1 
+		   END) / COUNT(*) AS success
   FROM DannySQLChallenge2..runner_order_new
 GROUP BY runner_id
 ````
@@ -265,17 +287,20 @@ DROP TABLE IF EXISTS dannySQLchallenge2..cleaned_pizza_toppings
 )
 
 INSERT INTO DannySQLChallenge2..cleaned_pizza_toppings
-SELECT pr.pizza_id, pt.topping_id, pt.topping_name
+SELECT pr.pizza_id, 
+       pt.topping_id, 
+       pt.topping_name
   FROM DannySQLChallenge2..pizza_recipes AS pr
-	   CROSS APPLY STRING_SPLIT(CAST(toppings AS varchar),',') AS val
-	   JOIN DannySQLChallenge2..pizza_toppings AS pt ON TRIM(val.value) = pt.topping_id
+ CROSS APPLY STRING_SPLIT(CAST(toppings AS varchar),',') AS val
+  JOIN DannySQLChallenge2..pizza_toppings AS pt ON TRIM(val.value) = pt.topping_id
 
 SELECT *
   FROM DannySQLChallenge2..cleaned_pizza_toppings
   
   <img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197058880-46c2c342-f044-430b-90ac-0c484a91b12c.png">
 
-SELECT cpt.pizza_id, pizza_name, STRING_AGG(topping_name, ', ') AS toppings
+SELECT cpt.pizza_id, pizza_name, S
+       STRING_AGG(topping_name, ', ') AS toppings
   FROM DannySQLChallenge2..cleaned_pizza_toppings AS cpt
   JOIN DannySQLChallenge2..pizza_names AS pn ON cpt.pizza_id = pn.pizza_id
 GROUP BY cpt.pizza_id, pizza_name
@@ -289,14 +314,16 @@ GROUP BY cpt.pizza_id, pizza_name
 ````sql
 WITH extras_count AS
 (
-SELECT TRIM(value) AS topping_id, CAST(topping_name AS varchar(100)) AS topping_name
+SELECT TRIM(value) AS topping_id, 
+       CAST(topping_name AS varchar(100)) AS topping_name
   FROM DannySQLChallenge2..customer_orders
-	   CROSS APPLY STRING_SPLIT(extras,',') AS val
+ CROSS APPLY STRING_SPLIT(extras,',') AS val
   JOIN DannySQLChallenge2..pizza_toppings AS pt ON pt.topping_id = TRIM(val.value)
  WHERE value <> ''
 )
 
-SELECT topping_id, topping_name , COUNT(*) AS item_count
+SELECT topping_id, topping_name , 
+       COUNT(*) AS item_count
   FROM extras_count
 GROUP BY topping_id, topping_name
 ````
@@ -310,15 +337,17 @@ GROUP BY topping_id, topping_name
 WITH exclusions_list
 AS
 (
-SELECT TRIM(value) AS topping_id, CAST(topping_name AS varchar(100)) AS topping_name
+SELECT TRIM(value) AS topping_id, 
+       CAST(topping_name AS varchar(100)) AS topping_name
   FROM DannySQLChallenge2..customer_orders
 	   CROSS APPLY STRING_SPLIT(exclusions, ',') AS val
   JOIN DannySQLChallenge2..pizza_toppings AS pt ON pt.topping_id = TRIM(val.value)
  WHERE value <> ''
 )
 
-SELECT topping_id, topping_name, count(*) AS total
-  FROM exclusions_list
+  SELECT topping_id, topping_name, 
+     	 count(*) AS total
+    FROM exclusions_list
 GROUP BY topping_id, topping_name
 ORDER BY topping_id,topping_name
 ````
