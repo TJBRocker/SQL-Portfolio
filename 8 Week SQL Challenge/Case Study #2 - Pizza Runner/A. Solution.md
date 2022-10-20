@@ -30,7 +30,7 @@ SELECT runner_id, COUNT(runner_id) AS successful_orders
  WHERE  distance <> ''
  GROUP BY runner_id
 ````
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197054509-89b0b195-6f56-46dd-8017-88b30eff79c6.png">
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197054509-89b0b195-6f56-46dd-8017-88b30eff79c6.png">
 
 
 
@@ -55,7 +55,7 @@ SELECT pn.pizza_name, COUNT(co.pizza_id) AS pizza_order_count
 GROUP BY pn.pizza_id, pn.pizza_name
 
 ````
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197054641-bf943784-20e6-40ef-95d8-18e3f644d0e8.png">
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197054641-bf943784-20e6-40ef-95d8-18e3f644d0e8.png">
 
 
 ### 5.  How many Vegetarian and Meatlovers were ordered by each customer?
@@ -68,7 +68,7 @@ GROUP BY customer_id, pn.pizza_id, pn.pizza_name;
 
 ````
 
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197054928-6fb9843f-4591-4f88-b5a0-fefda164d543.png">
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197054928-6fb9843f-4591-4f88-b5a0-fefda164d543.png">
 
 
 ### 6.  What was the maximum number of pizzas delivered in a single order?
@@ -99,7 +99,7 @@ SELECT co.customer_id,
 WHERE distance <> ''
 GROUP BY customer_id
 ````
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197055151-66491012-4220-4bde-9bea-a272f4dfc3c5.png">
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197055151-66491012-4220-4bde-9bea-a272f4dfc3c5.png">
 
 ### 8.  How many pizzas were delivered that had both exclusions and extras?
 
@@ -172,7 +172,7 @@ SELECT runner_id, AVG(pickup_time) AS average_pickup
   FROM time_taken
 GROUP BY runner_id
 ````
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197056427-c66460e1-1ba4-4716-b602-ee627ab04ff5.png">
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197056427-c66460e1-1ba4-4716-b602-ee627ab04ff5.png">
 
 
 ### 3.  Is there any relationship between the number of pizzas and how long the order takes to prepare?
@@ -204,26 +204,52 @@ FROM distance_by_order
 GROUP BY customer_id
 ````
 
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197057765-404109ba-99dd-46c7-970e-9e9291a0b482.png">
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197057765-404109ba-99dd-46c7-970e-9e9291a0b482.png">
 
 
 ### 5.  What was the difference between the longest and shortest delivery times for all orders?
 
 ````sql
-
+SELECT  MAX(CAST(duration AS float)) - MIN(CAST(duration AS float)) AS delivery_time_difference
+  FROM DannySQLChallenge2..runner_order_new
+WHERE distance <> ''
 ````
+
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197058194-1c7370cc-8d6b-428d-8d6b-ad08f2ef3b7a.png">
+
 
 ### 6.  What was the average speed for each runner for each delivery and do you notice any trend for these values?
 
 ````sql
+WITH runner_speed
+AS(
+SELECT  runner_id, ron.order_id, ROUND(CAST(ron.distance AS float) / (CAST(ron.duration AS float)/60),2) AS avg_speed
+  FROM DannySQLChallenge2..runner_order_new AS ron
+WHERE distance <> ''
+)
 
+SELECT runner_id, ROUND(AVG(avg_speed),2) AS avg_speed, MAX(avg_speed)-MIN(avg_speed) AS speed_variation
+  FROM runner_speed
+GROUP BY runner_id
 ````
+
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197058254-f336e5ab-d652-434d-a9f9-4ae44e771488.png">
+
+
 
 ### 7.  What is the successful delivery percentage for each runner?
 
 ````sql
-
+SELECT runner_id, 
+	   SUM(100*CASE 
+			WHEN distance = '' 
+				 THEN 0
+				 ELSE 1 
+				 END) / COUNT(*) AS success
+  FROM DannySQLChallenge2..runner_order_new
+GROUP BY runner_id
 ````
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197058543-ca416fc5-154f-4db5-9f0a-c4bc477a09d7.png">
 
 
 ## C. Ingredient Optimisation
@@ -231,20 +257,74 @@ GROUP BY customer_id
 ### 1.  What are the standard ingredients for each pizza?
 
 ````sql
+DROP TABLE IF EXISTS dannySQLchallenge2..cleaned_pizza_toppings
+ CREATE TABLE dannySQLchallenge2..cleaned_pizza_toppings
+ (pizza_id INT,
+  topping_id INT,
+  topping_name VARCHAR(50)
+)
 
+INSERT INTO DannySQLChallenge2..cleaned_pizza_toppings
+SELECT pr.pizza_id, pt.topping_id, pt.topping_name
+  FROM DannySQLChallenge2..pizza_recipes AS pr
+	   CROSS APPLY STRING_SPLIT(CAST(toppings AS varchar),',') AS val
+	   JOIN DannySQLChallenge2..pizza_toppings AS pt ON TRIM(val.value) = pt.topping_id
+
+SELECT *
+  FROM DannySQLChallenge2..cleaned_pizza_toppings
+  
+  <img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197058880-46c2c342-f044-430b-90ac-0c484a91b12c.png">
+
+SELECT cpt.pizza_id, pizza_name, STRING_AGG(topping_name, ', ') AS toppings
+  FROM DannySQLChallenge2..cleaned_pizza_toppings AS cpt
+  JOIN DannySQLChallenge2..pizza_names AS pn ON cpt.pizza_id = pn.pizza_id
+GROUP BY cpt.pizza_id, pizza_name
 ````
+<img width="650" alt="image" src="https://user-images.githubusercontent.com/59825363/197059058-139e6b03-99f3-43d8-af07-42d71b92cecf.png">
+
+
 
 ### 2.  What was the most commonly added extra?
 
 ````sql
+WITH extras_count AS
+(
+SELECT TRIM(value) AS topping_id, CAST(topping_name AS varchar(100)) AS topping_name
+  FROM DannySQLChallenge2..customer_orders
+	   CROSS APPLY STRING_SPLIT(extras,',') AS val
+  JOIN DannySQLChallenge2..pizza_toppings AS pt ON pt.topping_id = TRIM(val.value)
+ WHERE value <> ''
+)
 
+SELECT topping_id, topping_name , COUNT(*) AS item_count
+  FROM extras_count
+GROUP BY topping_id, topping_name
 ````
+<img width="300" alt="image" src="https://user-images.githubusercontent.com/59825363/197070876-2b0c3162-30b5-477f-83da-89959ead7cc1.png">
+
+
 
 ### 3.  What was the most common exclusion?
 
 ````sql
+WITH exclusions_list
+AS
+(
+SELECT TRIM(value) AS topping_id, CAST(topping_name AS varchar(100)) AS topping_name
+  FROM DannySQLChallenge2..customer_orders
+	   CROSS APPLY STRING_SPLIT(exclusions, ',') AS val
+  JOIN DannySQLChallenge2..pizza_toppings AS pt ON pt.topping_id = TRIM(val.value)
+ WHERE value <> ''
+)
 
+SELECT topping_id, topping_name, count(*) AS total
+  FROM exclusions_list
+GROUP BY topping_id, topping_name
+ORDER BY topping_id,topping_name
 ````
+
+<img width="300" alt="image" src="https://user-images.githubusercontent.com/59825363/197070983-d15653fa-fbf7-4d87-ba8b-703ecf0ad8b9.png">
+
 
 ### 4.  Generate an order item for each record in the customers_orders table in the format of one of the following:
   - Meat Lovers
