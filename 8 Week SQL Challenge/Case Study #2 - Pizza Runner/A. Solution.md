@@ -387,15 +387,41 @@ ORDER BY topping_id,topping_name
 ### 1.	If a Meat Lovers pizza costs $12 and Vegetarian costs $10 and there were no charges for changes - how much money has Pizza Runner made so far if there are no delivery fees?
 
 ````sql
-
+SELECT CONCAT('$',SUM(
+       CASE 
+       WHEN pizza_id = 1 
+       THEN 12 
+       ELSE 10 
+       END)) AS revenue
+  FROM DannySQLChallenge2..customer_orders AS co
+  JOIN DannySQLChallenge2..runner_order_new AS ron ON ron.order_id=co.order_id
+ WHERE cancellation = ''
 ````
+
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197854447-3bb9247a-7092-450b-8bda-72a621b0e1c1.png">
+
 
 ### 2.	What if there was an additional $1 charge for any pizza extras?
 	-	Add cheese is $1 extra
 
 ````sql
-
+SELECT CONCAT('$', 
+       SUM(
+	   CASE 
+	   WHEN pizza_id = 1 
+	   THEN 12 
+	   ELSE 10 
+	   END) + 
+	   (SELECT SUM(LEN(REPLACE(REPLACE(extras,',',''),' ',''))) AS extras_cost
+	      FROM DannySQLChallenge2..customer_orders AS co
+	      JOIN DannySQLChallenge2..runner_order_new AS ron ON ron.order_id=co.order_id
+	     WHERE cancellation = '')) AS total_revenue
+  FROM DannySQLChallenge2..customer_orders AS co
+  JOIN DannySQLChallenge2..runner_order_new AS ron ON ron.order_id=co.order_id
+ WHERE cancellation = ''
 ````
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197854666-acfb6a7a-be0f-4417-abe1-6496187dbf6f.png">
+
 
 ### 3.	The Pizza Runner team now wants to add an additional ratings system that allows customers to rate their runner, how would you design an additional table for this new dataset - generate a schema for this new table and insert your own data for ratings for each successful customer order between 1 to 5.
 ### 4.	Using your newly generated table - can you join all of the information together to form a table which has the following information for successful deliveries?
@@ -411,14 +437,56 @@ ORDER BY topping_id,topping_name
 	-	Total number of pizzas
 
 ````sql
+SELECT customer_id,
+       ron.order_id,
+       runner_id,
+       order_time,
+       pickup_time,
+       DATEDIFF(MINUTE, order_time, pickup_time) AS time_taken_to_pickup,
+       duration AS delivery_duration,
+       ROUND(CAST(ron.distance AS float) / (CAST(ron.duration AS float)/60),2) AS avg_speed,
+       COUNT(pizza_id) AS number_pizzas
+  FROM DannySQLChallenge2..runner_order_new AS ron
+  JOIN DannySQLChallenge2..customer_orders AS co ON co.order_id = ron.order_id
+ WHERE cancellation = ''
+ GROUP BY customer_id, ron.order_id, runner_id, order_time, pickup_time, duration, ROUND(CAST(ron.distance AS float) / (CAST(ron.duration AS float)/60),2)
 
 ````
+<img width="750" alt="image" src="https://user-images.githubusercontent.com/59825363/197854908-7d58901f-6f0f-44e7-bc1e-7a081814308c.png">
+
+
 
 ### 5.	If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
 
 ````sql
+WITH revenue_tab
+AS
+(
+SELECT SUM(
+	   CASE 
+	   WHEN pizza_id = 1 
+	   THEN 12 
+	   ELSE 10 
+	    END) AS revenue
+  FROM DannySQLChallenge2..customer_orders AS co
+  JOIN DannySQLChallenge2..runner_order_new AS ron ON ron.order_id=co.order_id
+ WHERE cancellation = ''
+),
+delivery_cost_tab
+AS
+(
+SELECT DISTINCT ron.order_id,
+       distance,
+       CAST(distance AS FLOAT) * 0.3 AS delivery_cost
+  FROM DannySQLChallenge2..customer_orders AS co
+  JOIN DannySQLChallenge2..runner_order_new AS ron ON ron.order_id=co.order_id
+ WHERE cancellation = ''
+)
 
+SELECT CONCAT('$',revenue - (SELECT SUM(delivery_cost) FROM delivery_cost_tab)) AS total_profits
+  FROM revenue_tab
 ````
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197855193-7d46fb48-62a4-4feb-96ac-558efe50efd2.png">
 
 
 ## E. Bonus Questions
@@ -426,6 +494,15 @@ ORDER BY topping_id,topping_name
 If Danny wants to expand his range of pizzas - how would this impact the existing data design? Write an INSERT statement to demonstrate what would happen if a new Supreme pizza with all the toppings was added to the Pizza Runner menu?
 
 ````sql
+INSERT INTO DannySQLChallenge2..pizza_names (pizza_id,pizza_name)
+VALUES (3, 'Supreme');
 
+INSERT INTO DannySQLChallenge2..pizza_recipes (pizza_id, toppings)
+VALUES (3,'1,2,3,4,5,6,7,8,9,10,11,12');
+
+SELECT *
+  FROM DannySQLChallenge2..pizza_names AS pn
+  JOIN DannySQLChallenge2..pizza_recipes AS pt ON pt.pizza_id = pn.pizza_id
 ````
+<img width="350" alt="image" src="https://user-images.githubusercontent.com/59825363/197855242-a4a13ef8-ce14-481f-b6a1-d5c9de481340.png">
 
