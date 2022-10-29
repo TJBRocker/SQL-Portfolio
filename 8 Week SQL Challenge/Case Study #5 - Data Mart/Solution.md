@@ -72,7 +72,11 @@ In a single query, perform the following operations and generate a new table in 
 
 ### 5.  What is the total count of transactions for each platform
 
+````sql
 
+
+
+````
 
 ### 6.  What is the percentage of sales for Retail vs Shopify for each month?
 
