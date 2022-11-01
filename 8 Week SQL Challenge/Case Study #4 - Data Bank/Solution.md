@@ -32,14 +32,24 @@ ORDER BY cn. region_id, region_name
 ````sql
   SELECT cn.region_id,
          region_name,
-         COUNT(customer_id) AS customer_count
+         COUNT(DISTINCT customer_id) AS customer_count
     FROM DannySQLChallenge4..customer_nodes AS cn
     JOIN DannySQLChallenge4..regions AS r ON  r.region_id = cn.region_id
 GROUP BY cn.region_id, region_name
 ORDER BY cn. region_id, region_name
 ````
+<img width="300" alt="image" src="https://user-images.githubusercontent.com/59825363/199303734-744ea1be-c73b-48ad-8cd1-3cb05bcc4796.png">
+
 
 ### How many days on average are customers reallocated to a different node?
+
+````sql
+SELECT AVG(DATEDIFF(DAY,start_date,end_date)) AS avg_reallocation_time
+  FROM DannySQLChallenge4..customer_nodes
+````
+<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/199304178-9f19b993-962e-4b70-a7a1-f5eccd34afd1.png">
+
+
 
 ````sql
 
