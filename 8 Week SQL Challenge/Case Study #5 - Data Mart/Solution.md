@@ -333,7 +333,45 @@ Which areas of the business have the highest negative impact in sales metrics pe
 Do you have any further recommendations for Danny’s team at Data Mart or any interesting insights based off this analysis?
 
 ````sql
+WITH cte
+AS
+(
+ SELECT region,
+	   CASE WHEN week_number BETWEEN 13 AND 24 THEN sales ELSE 0 END AS before_date_sales,
+	   CASE WHEN week_number BETWEEN 25 AND 36 THEN sales ELSE 0 END AS after_date_sales
+  FROM DannySQLChallenge5..cleaned_weekly_sales
+ WHERE week_number BETWEEN 13 AND 36
+)
 
+SELECT region,
+	   SUM(before_date_sales) AS before_event_sales,
+	   SUM(after_date_sales) AS after_event_sales,
+	   SUM(after_date_sales) - SUM(before_date_sales) AS difference,
+	   CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
+  FROM cte
+GROUP BY region
+ORDER BY region
 ````
 
+This query is repeated just by replacing whichever field we are interested in. 
+
+Region:
+
+<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199300266-b08b277a-30df-4755-96b8-cdc2ab3bbab2.png">
+
+platform:
+
+<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199300335-7c52f25f-8c9a-4465-8b5a-50af1f3336ae.png">
+
+age_band:
+
+<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199300388-6e390e93-cd3c-48a9-8120-54b4182f6749.png">
+
+demographic:
+
+![image](https://user-images.githubusercontent.com/59825363/199300423-2a5b293c-54b9-4e3e-a6f6-6330487605bb.png)
+
+customer_type:
+
+<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199300450-e33c7497-7101-407d-9c9b-9d5f7fb0b159.png">
 
