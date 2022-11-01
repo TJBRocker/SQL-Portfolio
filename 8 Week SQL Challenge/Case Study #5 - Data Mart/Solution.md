@@ -127,41 +127,97 @@ ORDER BY region, month_number, DATENAME(month, week_date)
 
 ````sql
 
-
+  SELECT platform, 
+		 SUM(transactions) AS total_trans
+    FROM DannySQLChallenge5..cleaned_weekly_sales
+GROUP BY platform
+ORDER BY platform
 
 ````
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/199276472-43c0228a-7701-4b87-9a16-06f6b30ca37e.png">
+
 
 ### 6.  What is the percentage of sales for Retail vs Shopify for each month?
 
 ````sql
 
+WITH cte AS(
+  SELECT calender_year,
+         month_number,
+         DATENAME(month,week_date) AS month_name,
+         SUM(CASE WHEN platform = 'Shopify' THEN sales ELSE 0 END) AS shopify_sales,
+         SUM(CASE WHEN platform = 'retail' THEN sales ELSE 0 END) AS retail_sales,
+         SUM(sales) AS total_sales
+    FROM DannySQLChallenge5..cleaned_weekly_sales
+GROUP BY calender_year,month_number,DATENAME(month,week_date)
+)
 
+  SELECT calender_year,
+         month_number,
+         month_name,
+         ROUND(100.0*shopify_sales/total_sales,2) AS shopify_percent,
+         ROUND(100.0*retail_sales/total_sales,2) As retail_percent
+    FROM cte
+ORDER BY calender_year, month_number, month_name
 
 ````
+<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199276864-e2206025-1a81-40a2-99a1-92bf55094d62.png">
+
 
 ### 7.  What is the percentage of sales by demographic for each year in the dataset?
 
 ````sql
+WITH cte AS(
+  SELECT calender_year,
+	 SUM(CASE WHEN demographic = 'couples' THEN sales ELSE 0 END) AS couples_sales,
+	 SUM(CASE WHEN demographic = 'families' THEN sales ELSE 0 END) AS families_sales,
+	 SUM(CASE WHEN demographic = 'unknown' THEN sales ELSE 0 END) AS unknown_sales,
+	 SUM(sales) AS total_sales
+    FROM DannySQLChallenge5..cleaned_weekly_sales
+GROUP BY calender_year
+)
 
-
-
+  SELECT calender_year,
+         ROUND(100.0*couples_sales/total_sales,2) AS couples_percent,
+	 ROUND(100.0*families_sales/total_sales,2) AS families_percent,
+	 ROUND(100.0*unknown_sales/total_sales,2) AS unknown_percent
+    FROM cte
+ORDER BY calender_year
 ````
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/199277116-f361f14e-f95e-434d-945a-564c792145ff.png">
+
 
 ### 8.  Which `age_band` and `demographic` values contribute the most to Retail sales?
 
 ````sql
-
-
-
+  SELECT age_band,
+	 demographic,
+	 SUM(sales) AS total_sales,
+	 ROUND(100.0*SUM(sales)/(SELECT SUM(sales) 
+	 			   FROM DannySQLChallenge5..cleaned_weekly_sales),2) 
+				   AS sales_percent
+    FROM DannySQLChallenge5..cleaned_weekly_sales
+   WHERE platform = 'retail'
+GROUP BY age_band, demographic
+ORDER BY SUM(sales) DESC
 ````
+<img width="350" alt="image" src="https://user-images.githubusercontent.com/59825363/199277201-3ec13ee0-faea-464c-be1a-2d2a759d6b3d.png">
+
 
 ### 9.  Can we use the `avg_transaction` column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
 
 ````sql
-
-
-
+  SELECT calender_year,
+	 platform,
+	 ROUND(AVG(avg_transaction),2) AS original_calc,
+	 ROUND(SUM(sales)/SUM(transactions),2) AS new_calc,
+	 ROUND((SUM(sales)/SUM(transactions)-AVG(avg_transaction)),2) AS difference,
+	 CONCAT(ROUND(100.0*(SUM(sales)/SUM(transactions)-AVG(avg_transaction))/AVG(avg_transaction),2),'%') AS percentage_difference
+    FROM DannySQLChallenge5..cleaned_weekly_sales
+GROUP BY calender_year, platform
 ````
+<img width="550" alt="image" src="https://user-images.githubusercontent.com/59825363/199277619-bc445d2b-b254-4730-a062-2bf5fba54194.png">
+
 
 ## 3. Before & After Analysis
 
@@ -173,9 +229,97 @@ We would include all `week_date` values for `2020-06-15` as the start of the per
 
 Using this analysis approach - answer the following questions:
 
-1.  What is the total sales for the 4 weeks before and after `2020-06-15`? What is the growth or reduction rate in actual values and percentage of sales?
-2.  What about the entire 12 weeks before and after?
-3.  How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?
+### 1.  What is the total sales for the 4 weeks before and after `2020-06-15`? What is the growth or reduction rate in actual values and percentage of sales?
+
+````sql
+WITH cte
+AS
+(
+ SELECT 
+	CASE WHEN week_number BETWEEN 21 AND 24 THEN sales ELSE 0 END AS before_date_sales,
+	CASE WHEN week_number BETWEEN 25 AND 28 THEN sales ELSE 0 END AS after_date_sales
+  FROM DannySQLChallenge5..cleaned_weekly_sales
+ WHERE calender_year = 2020 AND week_number BETWEEN 21 AND 28
+)
+
+SELECT SUM(before_date_sales) AS before_event_sales,
+       SUM(after_date_sales) AS after_event_sales,
+       SUM(after_date_sales) - SUM(before_date_sales) AS difference,
+       CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
+  FROM cte
+````
+<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199278123-75dd9563-656b-4b3d-90bb-6759d9f4bc03.png">
+
+
+### 2.  What about the entire 12 weeks before and after?
+
+````sql
+WITH cte
+AS
+(
+ SELECT 
+       CASE WHEN week_number BETWEEN 13 AND 24 THEN sales ELSE 0 END AS before_date_sales,
+       CASE WHEN week_number BETWEEN 25 AND 36 THEN sales ELSE 0 END AS after_date_sales
+  FROM DannySQLChallenge5..cleaned_weekly_sales
+ WHERE calender_year = 2020 AND week_number BETWEEN 13 AND 36
+)
+
+SELECT SUM(before_date_sales) AS before_event_sales,
+       SUM(after_date_sales) AS after_event_sales,
+       SUM(after_date_sales) - SUM(before_date_sales) AS difference,
+       CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
+  FROM cte
+````
+<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199278330-d11ad2e4-98cd-4025-b362-c2d9bfe2fb01.png">
+
+
+### 3.  How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?
+
+````sql
+WITH cte
+AS
+(
+ SELECT calender_year,
+        CASE WHEN week_number BETWEEN 21 AND 24 THEN sales ELSE 0 END AS before_date_sales,
+        CASE WHEN week_number BETWEEN 25 AND 28 THEN sales ELSE 0 END AS after_date_sales
+  FROM DannySQLChallenge5..cleaned_weekly_sales
+ WHERE week_number BETWEEN 21 AND 28
+)
+
+  SELECT calender_year,
+         SUM(before_date_sales) AS before_event_sales,
+         SUM(after_date_sales) AS after_event_sales,
+         SUM(after_date_sales) - SUM(before_date_sales) AS difference,
+         CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
+    FROM cte
+GROUP BY calender_year
+ORDER BY calender_year
+````
+<img width="500" alt="image" src="https://user-images.githubusercontent.com/59825363/199278648-e1960d36-c250-47b7-aba6-a01254de7cbe.png">
+
+
+````sql
+WITH cte
+AS
+(
+ SELECT calender_year,
+        CASE WHEN week_number BETWEEN 13 AND 24 THEN sales ELSE 0 END AS before_date_sales,
+        CASE WHEN week_number BETWEEN 25 AND 36 THEN sales ELSE 0 END AS after_date_sales
+  FROM DannySQLChallenge5..cleaned_weekly_sales
+ WHERE week_number BETWEEN 13 AND 36
+)
+
+   SELECT calender_year,
+	  SUM(before_date_sales) AS before_event_sales,
+	  SUM(after_date_sales) AS after_event_sales,
+	  SUM(after_date_sales) - SUM(before_date_sales) AS difference,
+	  CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
+    FROM cte
+GROUP BY calender_year
+ORDER BY calender_year
+````
+<img width="500" alt="image" src="https://user-images.githubusercontent.com/59825363/199278803-7c7604f0-7124-491e-8dd7-18d87e82637b.png">
+
 
 ## 4. Bonus Question
 Which areas of the business have the highest negative impact in sales metrics performance in 2020 for the 12 week before and after period?
@@ -187,3 +331,9 @@ Which areas of the business have the highest negative impact in sales metrics pe
 - customer_type
 
 Do you have any further recommendations for Danny’s team at Data Mart or any interesting insights based off this analysis?
+
+````sql
+
+````
+
+
