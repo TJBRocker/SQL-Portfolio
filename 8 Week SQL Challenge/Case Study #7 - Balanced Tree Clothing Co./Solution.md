@@ -112,7 +112,7 @@ SELECT TOP 1
 
 ````
 
-<img width="235" alt="image" src="https://user-images.githubusercontent.com/59825363/219489378-b1647add-00f9-4014-8d53-86713568a908.png">
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219489378-b1647add-00f9-4014-8d53-86713568a908.png">
 
 
 ### 4. What is the average discount value per transaction?
