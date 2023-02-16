@@ -6,9 +6,13 @@
 
 ````sql
 
-
+SELECT SUM(qty) AS total_sold
+  FROM DannySQLChallenge7..sales
 
 ````
+<img width="119" alt="image" src="https://user-images.githubusercontent.com/59825363/219477894-fae2f0a3-824e-493f-a7a7-e8b3b6775dfd.png">
+
+
 
 ### 2. What is the total generated revenue for all products before discounts?
 
