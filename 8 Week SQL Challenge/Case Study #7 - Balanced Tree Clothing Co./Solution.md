@@ -42,18 +42,23 @@ SELECT SUM(qty) AS total_sold
 
 ````sql
 
-
+SELECT SUM(qty*price) AS sales_before_discounts
+  FROM DannySQLChallenge7..sales
 
 ````
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/219478420-b8a27ccf-63cd-4ebd-bbc2-9b57eebf011a.png">
 
 
 ### 3. What was the total discount amount for all products?
 
 ````sql
 
-
+SELECT SUM(qty*price*discount*0.01) AS total_discounts
+  FROM DannySQLChallenge7..sales
 
 ````
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/219478509-221e0586-71ed-4167-ba1d-342e0ed58544.png">
+
 
 ## Transaction Analysis
 
