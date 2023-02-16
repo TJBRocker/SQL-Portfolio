@@ -39,15 +39,6 @@
 
 ````
 
-
-
-````sql
-
-
-
-````
-
-
 ### 2. What is the average unique products purchased in each transaction?
 
 ````sql
@@ -55,16 +46,6 @@
 
 
 ````
-
-
-
-````sql
-
-
-
-````
-
-
 ### 3. What are the 25th, 50th and 75th percentile values for the revenue per transaction?
 
 ````sql
@@ -107,15 +88,6 @@
 
 ````
 
-
-
-````sql
-
-
-
-````
-
-
 ### 6. What is the average revenue for member transactions and non-member transactions?
 
 ````sql
@@ -123,16 +95,6 @@
 
 
 ````
-
-
-
-````sql
-
-
-
-````
-
-
 
 ## Product Analysis
 
@@ -224,7 +186,6 @@
 
 
 ````
-
 
 
 ## Reporting Challenge
