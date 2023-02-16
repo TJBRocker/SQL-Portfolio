@@ -1,5 +1,30 @@
 # Case Study #7 - Balanced Tree Clothing Co.
 
+````sql
+
+SELECT *
+  FROM DannySQLChallenge7..product_details
+
+SELECT *
+  FROM DannySQLChallenge7..product_hierarchy
+
+SELECT *
+  FROM DannySQLChallenge7..product_prices
+
+SELECT *
+  FROM DannySQLChallenge7..sales
+
+````
+
+<img width="606" alt="image" src="https://user-images.githubusercontent.com/59825363/219478121-36e10c21-b039-4cf9-ada8-216c1a7ad9fd.png">
+
+<img width="216" alt="image" src="https://user-images.githubusercontent.com/59825363/219478192-8effe1fa-8b03-4c3c-8f0c-f7de0ed4515b.png">
+
+<img width="163" alt="image" src="https://user-images.githubusercontent.com/59825363/219478253-c8ebc32b-a8dc-4f22-b8b5-db39ca6de205.png">
+
+<img width="365" alt="image" src="https://user-images.githubusercontent.com/59825363/219478282-fae0975c-07f3-4568-9e24-e54c753151ee.png">
+
+
 ## High Level Sales Analysis
 
 ### 1. What was the total quantity sold for all products?
@@ -10,9 +35,8 @@ SELECT SUM(qty) AS total_sold
   FROM DannySQLChallenge7..sales
 
 ````
+
 <img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/219477894-fae2f0a3-824e-493f-a7a7-e8b3b6775dfd.png">
-
-
 
 ### 2. What is the total generated revenue for all products before discounts?
 
