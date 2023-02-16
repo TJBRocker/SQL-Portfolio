@@ -415,7 +415,7 @@ Feel free to split up your final outputs into as many tables as you need - but b
 
 ## Bonus
 
-Use a single SQL query to transform the 'product_hierarchy' and 'product_prices' datasets to the product_details table.
+Use a single SQL query to transform the "product_hierarchy" and "product_prices" datasets to the product_details table.
 
 Hint: you may want to consider using a recursive CTE to solve this problem!
 
