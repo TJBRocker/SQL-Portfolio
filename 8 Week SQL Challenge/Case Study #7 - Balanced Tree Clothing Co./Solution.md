@@ -66,25 +66,54 @@ SELECT SUM(qty*price*discount*0.01) AS total_discounts
 
 ````sql
 
-
+SELECT COUNT (DISTINCT txn_id) AS unique_trans
+  FROM DannySQLChallenge7..sales
 
 ````
+
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/219478658-d7bc0ef9-36a8-4cda-a13b-c058ac323beb.png">
+
 
 ### 2. What is the average unique products purchased in each transaction?
 
 ````sql
 
+WITH CTE AS(
 
+  SELECT txn_id,
+	     COUNT(DISTINCT prod_id) AS unique_products
+    FROM DannySQLChallenge7..sales
+GROUP BY txn_id
+)
+
+SELECT AVG(unique_products) AS average_unique_products
+  FROM CTE
 
 ````
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/219488998-7c7547ba-11a7-456a-92db-154652421727.png">
+
 
 ### 3. What are the 25th, 50th and 75th percentile values for the revenue per transaction?
 
 ````sql
 
+WITH CTE AS(
 
+SELECT txn_id, SUM(qty*price) AS rev
+  FROM DannySQLChallenge7..sales
+GROUP BY txn_id
+)
+
+SELECT TOP 1
+	   PERCENTILE_CONT(0.25) WITHIN GROUP(ORDER BY rev) OVER() AS '25th percentile',
+	   PERCENTILE_CONT(0.50) WITHIN GROUP(ORDER BY rev) OVER() AS '50th percentile',
+	   PERCENTILE_CONT(0.75) WITHIN GROUP(ORDER BY rev) OVER() AS '75th percentile'
+  FROM CTE
 
 ````
+
+<img width="235" alt="image" src="https://user-images.githubusercontent.com/59825363/219489378-b1647add-00f9-4014-8d53-86713568a908.png">
+
 
 ### 4. What is the average discount value per transaction?
 
