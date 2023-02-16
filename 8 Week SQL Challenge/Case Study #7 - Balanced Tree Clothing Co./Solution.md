@@ -119,25 +119,67 @@ SELECT TOP 1
 
 ````sql
 
+WITH CTE AS(
 
+SELECT txn_id, SUM(qty*price*discount*0.01) AS total_discount
+  FROM DannySQLChallenge7..sales
+GROUP BY txn_id
+)
+
+SELECT ROUND(AVG(total_discount),2) AS average_discount
+  FROM CTE
 
 ````
+
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/219489527-dffbb8d0-70e3-4b74-8c69-a61f5dfd1680.png">
+
 
 ### 5. What is the percentage split of all transactions for members vs non-members?
 
 ````sql
 
+WITH CTE AS(
 
+SELECT DISTINCT txn_id, 
+	   CASE WHEN TRIM(member) = 't' THEN 1 ELSE 0 END AS member_true,
+	   CASE WHEN TRIM(member) = 'f' THEN 1 ELSE 0 END AS member_false
+  FROM DannySQLChallenge7..sales
+)
+
+SELECT CAST(ROUND(100.0*SUM(member_true)/COUNT(*),2) AS float) AS percent_members,
+	   CAST(ROUND(100.0*SUM(member_false)/COUNT(*),2)AS float) AS percent_non_members
+  FROM CTE
 
 ````
+
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219489601-6bc61809-44b7-4bee-b37f-9ca0ea8a81ab.png">
+
 
 ### 6. What is the average revenue for member transactions and non-member transactions?
 
 ````sql
 
+WITH CTE AS(
 
+SELECT txn_id,
+	   SUM(CASE WHEN TRIM(member) = 't' THEN price*qty END) AS members_rev,
+	   SUM(CASE WHEN TRIM(member) = 't' THEN ((1-discount*0.01)*price*qty) END) AS members_inc,
+	   SUM(CASE WHEN TRIM(member) = 'f' THEN price*qty END) AS non_members_rev,
+	   SUM(CASE WHEN TRIM(member) = 'f' THEN ((1-discount*0.01)*price*qty) END) AS non_members_inc
+  FROM DannySQLChallenge7..sales
+GROUP BY txn_id
+)
+
+SELECT ROUND(AVG(members_rev),2) AS avg_members_rev,
+	   ROUND(AVG(members_inc),2) AS avg_members_inc,
+	   ROUND(AVG(non_members_rev),2) AS avg_non_members_rev,
+	   ROUND(AVG(non_members_inc),2) AS avg_non_members_inc
+  FROM CTE
 
 ````
+
+<img width="500" alt="image" src="https://user-images.githubusercontent.com/59825363/219489671-b6a11d6c-82be-4d4a-ae44-48c51516dba4.png">
+
 
 ## Product Analysis
 
@@ -145,82 +187,212 @@ SELECT TOP 1
 
 ````sql
 
-
+SELECT TOP 3
+	   s.prod_id,
+	   pd.product_name,
+	   SUM(s.qty*s.price) AS rev_bf_discount
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY s.prod_id, pd.product_name
+ORDER BY rev_bf_discount DESC
 
 ````
 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219489769-82bdaadf-98bb-4d19-8bcb-96bae06d735c.png">
 
 ### 2. What is the total quantity, revenue and discount for each segment?
 
 ````sql
 
-
+SELECT pd.segment_id,
+	   pd.segment_name,
+	   SUM(s.qty) AS quantity,
+	   SUM(s.price*s.qty) AS revenue,
+	   ROUND(SUM(s.price*s.qty*s.discount*0.01),2) AS total_discount
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY pd.segment_id, pd.segment_name
 
 ````
 
+<img width="303" alt="image" src="https://user-images.githubusercontent.com/59825363/219489871-998f01bb-69f0-42ed-b90b-258b74cfdec8.png">
 
 ### 3. What is the top selling product for each segment?
 
 ````sql
 
+WITH CTE AS (
+SELECT pd.segment_id,
+	   pd.segment_name,
+	   pd.product_id,
+	   pd.product_name,
+	   SUM(s.qty) AS quantity,
+	   SUM(s.price*s.qty) AS revenue,
+	   ROUND(SUM(s.price*s.qty*s.discount*0.01),2) AS total_discount,
+	   ROW_NUMBER() OVER(PARTITION BY pd.segment_name ORDER BY SUM(s.qty) DESC) AS quantity_rank,
+	   ROW_NUMBER() OVER(PARTITION BY pd.segment_name ORDER BY SUM(s.qty*s.price) DESC) AS revenue_rank
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY pd.segment_id, pd.segment_name, pd.product_id, pd.product_name
+)
 
+SELECT segment_name,
+	   product_name,
+	   quantity
+  FROM CTE
+ WHERE quantity_rank = 1
 
 ````
 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219489962-a0807541-32ca-4d92-95c6-7844584b3cd1.png">
+
+````sql
+
+ WITH CTE AS (
+SELECT pd.segment_id,
+	   pd.segment_name,
+	   pd.product_id,
+	   pd.product_name,
+	   SUM(s.qty) AS quantity,
+	   SUM(s.price*s.qty) AS revenue,
+	   ROUND(SUM(s.price*s.qty*s.discount*0.01),2) AS total_discount,
+	   ROW_NUMBER() OVER(PARTITION BY pd.segment_name ORDER BY SUM(s.qty) DESC) AS quantity_rank,
+	   ROW_NUMBER() OVER(PARTITION BY pd.segment_name ORDER BY SUM(s.qty*s.price) DESC) AS revenue_rank
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY pd.segment_id, pd.segment_name, pd.product_id, pd.product_name
+)
+
+SELECT segment_name,
+	   product_name,
+	   revenue
+  FROM CTE
+ WHERE revenue_rank = 1
+
+````
+
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219490028-bcfff046-8722-4829-97db-606649143cff.png">
 
 ### 4. What is the total quantity, revenue and discount for each category?
 
 ````sql
 
-
+SELECT pd.category_id,
+	   pd.category_name,
+	   SUM(s.qty) AS quantity,
+	   SUM(s.price*s.qty) AS revenue,
+	   ROUND(SUM(s.price*s.qty*s.discount*0.01),2) AS total_discount
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY pd.category_id, pd.category_name
+ORDER BY pd.category_id
 
 ````
 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219490089-118bcb64-d4b7-4b39-a658-e2c1cb93e9be.png">
 
 ### 5. What is the top selling product for each category?
 
 ````sql
 
+WITH CTE AS(
 
+SELECT pd.segment_id,
+	   pd.segment_name,
+	   pd.product_id,
+	   pd.product_name,
+	   pd.category_id,
+	   pd.category_name,
+	   SUM(s.qty) AS quantity,
+	   SUM(s.price*s.qty) AS revenue,
+	   ROUND(SUM(s.price*s.qty*s.discount*0.01),2) AS total_discount,
+	   ROW_NUMBER() OVER(PARTITION BY pd.category_name ORDER BY SUM(s.qty) DESC) AS quantity_rank,
+	   ROW_NUMBER() OVER(PARTITION BY pd.category_name ORDER BY SUM(s.qty*s.price) DESC) AS revenue_rank
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY pd.segment_id, pd.segment_name, pd.product_id, pd.product_name, pd.category_id, pd.category_name
+)
+
+SELECT category_name,
+       product_name,
+	   quantity,
+	   revenue
+  FROM CTE
+ WHERE quantity_rank = 1
 
 ````
 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219490203-71d2a18e-c7df-47d0-97fb-3eb37d76692d.png">
 
 ### 6. What is the percentage split of revenue by product for each segment?
 
 ````sql
 
-
+SELECT pd.segment_id,
+	   pd.segment_name,
+	   pd.product_id,
+	   pd.product_name,
+	   pd.category_id,
+	   pd.category_name,
+	   SUM(s.qty) AS quantity,
+	   SUM(s.price*s.qty) AS revenue,
+	   ROUND(SUM(s.price*s.qty*s.discount*0.01),2) AS total_discount,
+	   ROW_NUMBER() OVER(PARTITION BY pd.category_name ORDER BY SUM(s.qty) DESC) AS quantity_rank,
+	   ROW_NUMBER() OVER(PARTITION BY pd.category_name ORDER BY SUM(s.qty*s.price) DESC) AS revenue_rank
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY pd.segment_id, pd.segment_name, pd.product_id, pd.product_name, pd.category_id, pd.category_name
 
 ````
 
+<img width="727" alt="image" src="https://user-images.githubusercontent.com/59825363/219490273-85c9c0f9-ad0b-4d3d-acf2-240f1a67c587.png">
 
 ### 7. What is the percentage split of revenue by segment for each category?
 
 ````sql
 
-
+SELECT pd.segment_name,  
+	   pd.category_name,
+	   ROUND(100.0*SUM(qty*s.price)/ SUM(SUM(qty*s.price)) OVER(PARTITION BY category_name),2) AS percent_of_rev
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY pd.segment_name,  pd.category_name
 
 ````
 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219490329-f0080b2c-e634-4cc3-92fd-44d11eebaf44.png">
 
 ### 8. What is the percentage split of total revenue by category?
 
 ````sql
 
-
+SELECT  
+	   pd.category_name,
+	   SUM(s.price*s.qty) AS revenue,
+	   ROUND(100.0*SUM(s.price*s.qty) / (SELECT SUM(price* qty) FROM DannySQLChallenge7..sales),2) AS percent_of_rev  
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY  pd.category_name
 
 ````
 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219490385-a9d61325-1449-4c2b-b663-1242e9a3c30a.png">
 
 ### 9. What is the total transaction “penetration” for each product? (hint: penetration = number of transactions where at least 1 quantity of a product was purchased divided by total number of transactions)
 
 ````sql
 
-
+SELECT 
+	   pd.product_name,
+	   CAST(ROUND(100.0*COUNT(prod_id) / (SELECT COUNT(DISTINCT txn_id) FROM DannySQLChallenge7..sales),2) AS float) AS penetration
+  FROM DannySQLChallenge7..sales AS s
+  JOIN DannySQLChallenge7..product_details AS pd ON pd.product_id = s.prod_id
+GROUP BY  pd.product_name
+ORDER BY 2 DESC
 
 ````
 
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/219490445-34b03b37-a03a-4dab-944f-991f7c1e8efd.png">
 
 ### 10. What is the most common combination of at least 1 quantity of any 3 products in a 1 single transaction?
 
