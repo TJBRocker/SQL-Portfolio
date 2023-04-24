@@ -26,7 +26,7 @@
 
 ````
 
-### 4.  How many `interest_id` values exist in the `fresh_segments.interest_metrics` table but not in the `fresh_segments.interest_map`` table? What`` about the other` way around?
+### 4.  How many `interest_id` values exist in the `fresh_segments.interest_metrics` table but not in the `fresh_segments.interest_map` table? What about the other way around?
 
 ````sql
 
