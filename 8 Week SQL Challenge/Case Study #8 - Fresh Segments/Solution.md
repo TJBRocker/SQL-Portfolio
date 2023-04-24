@@ -34,7 +34,7 @@
 
 ````
 
-### 5.  Summarise the id values in the `fresh_segments.interest_map`` by its total` record count in this table
+### 5.  Summarise the id values in the `fresh_segments.interest_map` by its total record count in this table
 
 ````sql
 
