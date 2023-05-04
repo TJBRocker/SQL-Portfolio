@@ -18,6 +18,9 @@
 
 ````
 
+<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/236242523-fa3a4f18-1cf3-4c4d-8184-a1c617278bf7.png">
+
+
 ### 3.  What do you think we should do with these null values in the `fresh_segments.interest_metrics`
 
 ````sql
