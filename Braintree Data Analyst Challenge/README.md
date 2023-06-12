@@ -77,7 +77,7 @@ a. create a single list of all per_capita records for year 2009 that includes co
 - country_code
 - country_name
 - gdp_per_capita
-- 
+
 b. order this list by:
 
 - continent_name ascending
