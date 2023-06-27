@@ -222,9 +222,18 @@ GROUP BY YEAR
 
 ````sql
 
-
+SELECT continent_name, ct.country_code, country_name, gdp_per_capita
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+ WHERE year = '2009'
 
 ````
+
+
+<img width="400" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/31452d7b-e96e-4b2d-b4b1-71d4bfba49e0">
+
 
 #### b. order this list by:
 
@@ -233,17 +242,42 @@ GROUP BY YEAR
 
 ````sql
 
-
+SELECT continent_name, ct.country_code, country_name, gdp_per_capita
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+ WHERE year = '2009'
+ORDER BY continent_name ASC, SUBSTRING(country_name, 2,3) DESC
 
 ````
+
+
+<img width="388" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/b45c833d-3fdc-40db-8a30-fd6f7e6cde82">
+
 
 #### c. create a running total of gdp_per_capita by continent_name
 
 ````sql
 
+WITH CTE AS(
+SELECT continent_name, ct.country_code, country_name, ROUND(gdp_per_capita,0) AS gdp_per_capita,
+	   SUM(gdp_per_capita)OVER(PARTITION BY continent_name ORDER BY continent_name, SUBSTRING(country_name, 2,3) DESC) AS running_total
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+ WHERE year = '2009'
+ )
 
+ SELECT continent_name, country_code, country_name, gdp_per_capita, ROUND(running_total,2) AS running_total
+   FROM CTE
 
 ````
+
+
+<img width="437" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f71d07bb-3c9f-44fd-9f0f-f7783d2eecaf">
+
 
 #### d. return only the first record from the ordered list for which each continent's running total of gdp_per_capita meets or exceeds $70,000.00 with the following columns:
 
