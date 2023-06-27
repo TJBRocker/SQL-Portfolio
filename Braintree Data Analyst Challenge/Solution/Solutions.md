@@ -54,9 +54,34 @@ Or
 
 ````sql
 
-
+WITH CTE AS(
+SELECT ct.country_code, cs.country_name, cts.continent_code, cts.continent_name,
+	   SUM(CASE WHEN year = '2011' THEN gdp_per_capita
+			ELSE 0 END) AS gdp_2011,
+	   SUM(CASE WHEN year = '2012' THEN gdp_per_capita
+			ELSE 0 END) AS gdp_2012
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+GROUP BY ct.country_code, cs.country_name, cts.continent_code, cts.continent_name
+),
+CTE1 AS(
+SELECT *, CAST(ROUND((gdp_2012-gdp_2011)/(NULLIF(gdp_2011,0))*100.0,2)AS FLOAT) AS growth_percent
+  FROM CTE
+),
+CTE2 AS(
+SELECT *, ROW_NUMBER() OVER(PARTITION BY continent_code ORDER BY growth_percent DESC) AS growth_rank
+  FROM CTE1
+)
+SELECT country_code,country_name, continent_code, continent_name, growth_percent, growth_rank
+  FROM CTE2 AS ct
+ WHERE growth_rank BETWEEN 10 AND 12
 
 ````
+
+<img width="424" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/ae104484-b21e-4cae-9058-82206f182009">
+
 
 ### 3. For the year 2012, create a 3 column, 1 row report showing the percent share of gdp_per_capita for the following regions:
 
