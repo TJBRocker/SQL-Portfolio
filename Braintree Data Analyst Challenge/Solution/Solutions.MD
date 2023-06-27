@@ -22,9 +22,14 @@ Or
 
 ````sql
 
-
+   SELECT COALESCE(country_code, 'FOO') AS country_code, COUNT(*) AS country_count
+     FROM Braintree..continent_map
+ GROUP BY country_code
+   HAVING COUNT(*) > 1
 
 ````
+
+
 
 - For all countries that have multiple rows in the continent_map table, delete all multiple records leaving only the 1 record per country. The record that you keep should be the first one when sorted by the continent_code alphabetically ascending. Provide the query/ies and explanation of step(s) that you follow to delete these records.
 
