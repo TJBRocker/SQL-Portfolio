@@ -289,9 +289,26 @@ SELECT continent_name, ct.country_code, country_name, ROUND(gdp_per_capita,0) AS
 
 ````sql
 
-
+WITH CTE AS(
+SELECT continent_name, ct.country_code, country_name, gdp_per_capita,
+	   SUM(gdp_per_capita)OVER(PARTITION BY continent_name ORDER BY continent_name, SUBSTRING(country_name, 2,3) DESC) AS running_total
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+ WHERE year = '2009'
+), CTE2 AS (
+SELECT *, ROW_NUMBER()OVER(PARTITION BY continent_name ORDER BY continent_name, SUBSTRING(country_name, 2,3) DESC) AS row_num
+  FROM CTE
+ WHERE running_total >= 70000
+)
+SELECT continent_name, country_code, country_name, ROUND(gdp_per_capita,2) AS gdp_per_capita, ROUND(running_total,2) AS running_total
+  FROM CTE2
+ WHERE row_num = 1
 
 ````
+
+<img width="443" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/cc911b89-543a-4b0f-be70-0faabadbc14d">
 
 ### 7. Find the country with the highest average gdp_per_capita for each continent for all years. Now compare your list to the following data set. Please describe any and all mistakes that you can find with the data set below. Include any code that you use to help detect these mistakes.
 
