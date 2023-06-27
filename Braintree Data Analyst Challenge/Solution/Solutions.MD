@@ -8,9 +8,9 @@
 
 2. List the countries ranked 10-12 in each continent by the percent of year-over-year growth descending from 2011 to 2012.
 
-The percent of growth should be calculated as: ((2012 gdp - 2011 gdp) / 2011 gdp)
+  The percent of growth should be calculated as: ((2012 gdp - 2011 gdp) / 2011 gdp)
 
-The list should include the columns:
+  The list should include the columns:
 
 - rank
 - continent_name
