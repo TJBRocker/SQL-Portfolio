@@ -1,6 +1,6 @@
 # Code Challenge
 
-1. Data Integrity Checking & Cleanup
+## 1. Data Integrity Checking & Cleanup
 
 - Alphabetically list all of the country codes in the continent_map table that appear more than once. Display any values where country_code is null as country_code = "FOO" and make this row appear first in the list, even though it should alphabetically sort to the middle. Provide the results of this query as your answer.
 
