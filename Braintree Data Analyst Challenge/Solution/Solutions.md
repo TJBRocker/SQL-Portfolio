@@ -93,9 +93,59 @@ SELECT country_code,country_name, continent_code, continent_name, growth_percent
 
 ````sql
 
-
+SELECT cts.continent_name, 
+	   ROUND(100.0*SUM(gdp_per_capita)/(SELECT SUM(gdp_per_capita) FROM Braintree..per_capita  WHERE year = '2012'),2) AS sum_gdp_per_capita
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+ WHERE year = '2012'
+GROUP BY cts.continent_name
 
 ````
+
+Initially tried the above, but then realised it doesn't work as there are some countries in the there which are just regions and not real countries, will show this using left joins:
+
+````sql
+
+   SELECT DISTINCT ct.country_code, country_name
+     FROM Braintree..per_capita AS ct
+LEFT JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+LEFT JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+LEFT JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+    WHERE continent_name IS NULL
+
+````
+
+<img width="320" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/6dca0d26-4c97-4e89-aca8-1244a1712db7">
+
+Can get around this by using 'inner' joins or standard joins. Will create either a CTE or table to use throughout queries
+
+````sql
+
+WITH CTE AS(
+SELECT gdp_per_capita, ct.country_code, cs.country_name, CASE WHEN cts.continent_name = 'Asia' THEN cts.continent_name
+			WHEN cts.continent_name = 'Europe' THEN cts.continent_name
+			ELSE 'Rest of World' END AS continent_group
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+ WHERE year = '2012'
+), CTE2 AS(
+SELECT continent_group,
+       ROUND(100.0*SUM(gdp_per_capita)/(SELECT SUM(gdp_per_capita) FROM CTE),2) AS sum_gdp_per_capita
+  FROM CTE
+GROUP BY continent_group)
+SELECT SUM(CASE WHEN continent_group = 'Asia' THEN sum_gdp_per_capita ELSE 0 END) AS Asia,
+	   SUM(CASE WHEN continent_group = 'Europe' THEN sum_gdp_per_capita ELSE 0 END) AS Europe,
+	   SUM(CASE WHEN continent_group = 'Rest of World' THEN sum_gdp_per_capita ELSE 0 END) AS Rest_of_World
+  FROM CTE2
+
+````
+
+<img width="250" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/825072c7-c54e-42aa-8686-96ee92d14741">
+
 
 ### 4a. What is the count of countries and sum of their related gdp_per_capita values for the year 2007 where the string 'an' (case insensitive) appears anywhere in the country name?
 
