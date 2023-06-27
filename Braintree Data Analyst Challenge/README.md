@@ -30,7 +30,7 @@ Finally, this is NOT an MS Excel/spreadsheet exercise. Excel is an important dat
 - Provide all code, including what you used to create the database and import data, and answers related to each question immediately below the question.
 - Feel free to leave lots of notes/comments to help us understand your work.
 - When you are ready, reply to this email and attach your results.
-- 
+  
 ## Code Challenge
 
 1. Data Integrity Checking & Cleanup
