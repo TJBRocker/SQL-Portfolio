@@ -6,7 +6,7 @@
 
 - For all countries that have multiple rows in the continent_map table, delete all multiple records leaving only the 1 record per country. The record that you keep should be the first one when sorted by the continent_code alphabetically ascending. Provide the query/ies and explanation of step(s) that you follow to delete these records.
 
-2. List the countries ranked 10-12 in each continent by the percent of year-over-year growth descending from 2011 to 2012.
+## 2. List the countries ranked 10-12 in each continent by the percent of year-over-year growth descending from 2011 to 2012.
 
   The percent of growth should be calculated as: ((2012 gdp - 2011 gdp) / 2011 gdp)
 
@@ -18,7 +18,7 @@
 - country_name
 - growth_percent
 
-3. For the year 2012, create a 3 column, 1 row report showing the percent share of gdp_per_capita for the following regions:
+## 3. For the year 2012, create a 3 column, 1 row report showing the percent share of gdp_per_capita for the following regions:
 
 (i) Asia, (ii) Europe, (iii) the Rest of the World. Your result should look something like:
 
