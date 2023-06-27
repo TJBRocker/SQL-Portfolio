@@ -38,21 +38,21 @@
 
 ### 6. All in a single query, execute all of the steps below and provide the results as your final answer:
 
-### a. create a single list of all per_capita records for year 2009 that includes columns:
+#### a. create a single list of all per_capita records for year 2009 that includes columns:
 
 - continent_name
 - country_code
 - country_name
 - gdp_per_capita
 
-### b. order this list by:
+#### b. order this list by:
 
 - continent_name ascending
 - characters 2 through 4 (inclusive) of the country_name descending
 -
 #### c. create a running total of gdp_per_capita by continent_name
 
-d. return only the first record from the ordered list for which each continent's running total of gdp_per_capita meets or exceeds $70,000.00 with the following columns:
+#### d. return only the first record from the ordered list for which each continent's running total of gdp_per_capita meets or exceeds $70,000.00 with the following columns:
 
 - continent_name
 - country_code
@@ -60,7 +60,7 @@ d. return only the first record from the ordered list for which each continent's
 - gdp_per_capita
 - running_total
 
-7. Find the country with the highest average gdp_per_capita for each continent for all years. Now compare your list to the following data set. Please describe any and all mistakes that you can find with the data set below. Include any code that you use to help detect these mistakes.
+### 7. Find the country with the highest average gdp_per_capita for each continent for all years. Now compare your list to the following data set. Please describe any and all mistakes that you can find with the data set below. Include any code that you use to help detect these mistakes.
 
 |rank|	continent_name|	country_code|	country_name|	avg_gdp_per_capita|
 | ----------- | ----------- | ----------- | ----------- | ----------- |
