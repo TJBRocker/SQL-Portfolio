@@ -151,17 +151,35 @@ SELECT SUM(CASE WHEN continent_group = 'Asia' THEN sum_gdp_per_capita ELSE 0 END
 
 ````sql
 
-
+SELECT COUNT(*) AS country_count, ROUND(SUM(gdp_per_capita),2) AS total_gdp
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+ WHERE year = '2007' AND LOWER(country_name) LIKE '%an%'
 
 ````
+
+
+<img width="250" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/fe70fa29-9fd6-4d82-a1c5-d82f728e6d0e">
+
 
 ### 4b. Repeat question 4a, but this time make the query case sensitive.
 
 ````sql
 
-
+SELECT COUNT(*) AS country_count, ROUND(SUM(gdp_per_capita),2) AS total_gdp
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+ WHERE year = '2007' AND country_name COLLATE Latin1_General_CS_AS LIKE '%an%'
 
 ````
+
+
+<img width="250" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f0d39da3-beb3-4fd5-8d47-61de6ec15f76">
+
 
 ### 5. Find the sum of gpd_per_capita by year and the count of countries for each year that have non-null gdp_per_capita where (i) the year is before 2012 and (ii) the country has a null gdp_per_capita in 2012. Your result should have the columns:
 
@@ -171,9 +189,27 @@ SELECT SUM(CASE WHEN continent_group = 'Asia' THEN sum_gdp_per_capita ELSE 0 END
 
 ````sql
 
-
+WITH CTE AS(
+SELECT ct.country_code
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+WHERE year = '2012' AND gdp_per_capita IS NULL
+)
+SELECT year, COUNT(*) AS country_count, ROUND(SUM(gdp_per_capita),2) AS total
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+WHERE YEAR < 2012 AND gdp_per_capita IS NOT NULL AND ct.country_code IN (SELECT * FROM CTE)
+GROUP BY YEAR
 
 ````
+
+
+<img width="275" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/6e8bd696-b7e4-4de0-b24d-ea14d58a6ac0">
+
 
 ### 6. All in a single query, execute all of the steps below and provide the results as your final answer:
 
