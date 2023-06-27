@@ -80,7 +80,7 @@ SELECT country_code,country_name, continent_code, continent_name, growth_percent
 
 ````
 
-<img width="424" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/ae104484-b21e-4cae-9058-82206f182009">
+<img width="600" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/ae104484-b21e-4cae-9058-82206f182009">
 
 
 ### 3. For the year 2012, create a 3 column, 1 row report showing the percent share of gdp_per_capita for the following regions:
