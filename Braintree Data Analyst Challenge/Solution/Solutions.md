@@ -345,3 +345,27 @@ SELECT continent_name, country_code, country_name, ROUND(gdp_per_capita,2) AS gd
 |1	|Oceania|	AUS|	Australia|	$47,070.39|
 |1	|South America|	CHL|	Chile	|$10,781.71|
 
+````sql
+
+WITH CTE AS(
+ SELECT cm.continent_code, continent_name, ct.country_code, country_name, gdp_per_capita
+  FROM Braintree..per_capita AS ct
+  JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
+  JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
+  JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
+WHERE gdp_per_capita IS NOT NULL
+), CTE2 AS(
+SELECT continent_code, continent_name, country_code, country_name, ROUND(AVG(gdp_per_capita),2) AS avg_gdp_per_capita
+  FROM CTE
+GROUP BY continent_code, continent_name, country_code, country_name
+), CTE3 AS(
+SELECT *, RANK() OVER(PARTITION BY continent_name ORDER BY avg_gdp_per_capita DESC) AS rank
+  FROM CTE2
+) 
+SELECT *
+  FROM CTE3
+ WHERE rank = 1
+
+````
+
+<img width="511" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/eb4116cc-2e6c-4e9a-b3be-79cb31d3dc80">
