@@ -26,4 +26,5 @@ There are eight different case studies over the entire challenge, which I'm goin
 
 ## Braintree Data Analyst Challenge
 ***
-[LINK](https://github.com/TJBRocker/SQL-Portfolio/tree/main/Braintree%20Data%20Analyst%20Challenge)
+
+According to [Nick Singh](linkedin.com/in/nick-singh-tech/) this is a real PayPal interview coding assignment. After completing various challenges and tutorials I found this realtively straightforward, but check out my solution at the following [LINK](https://github.com/TJBRocker/SQL-Portfolio/tree/main/Braintree%20Data%20Analyst%20Challenge)
