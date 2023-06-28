@@ -35,12 +35,34 @@ Or
 - For all countries that have multiple rows in the continent_map table, delete all multiple records leaving only the 1 record per country. The record that you keep should be the first one when sorted by the continent_code alphabetically ascending. Provide the query/ies and explanation of step(s) that you follow to delete these records.
 
 
-For this you would typically use ````sql DELETE FROM [table] WHERE [condition]````
+For this you would typically use ```` DELETE FROM [table] WHERE [condition]```` but for my approach, I wanted to keep the structural integrity of the database so I created a new table
 ````sql
 
+SELECT country_code, continent_code
+  INTO Braintree..new_continent_map
+FROM(
 
+  SELECT COALESCE(country_code, 'FOO') AS country_code, 
+	     continent_code,
+		 ROW_NUMBER() OVER(PARTITION BY country_code ORDER BY country_code, continent_code) AS ID
+    FROM Braintree..continent_map
+) AS temp
+WHERE ID = 1
 
 ````
+
+and as you can see there are no countries with more than one ID:
+
+````sql
+
+SELECT country_code, COUNT(*)  AS country_count
+  FROM Braintree..new_continent_map
+GROUP BY country_code
+HAVING COUNT(*) > 1
+
+````
+<img width="250" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/e7d62ef9-7afa-4cac-a289-7ee2c2e783f6">
+
 
 ### 2. List the countries ranked 10-12 in each continent by the percent of year-over-year growth descending from 2011 to 2012.
 
