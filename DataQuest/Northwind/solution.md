@@ -45,7 +45,8 @@ SELECT *, SUM(sales) OVER(ORDER BY month_extract) AS running_total
 
 ````
 
-![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/951f2265-59fd-4b41-97bc-48b9efaec8b0)
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/860557cc-2fff-44e2-8bd4-64f96c931b23)
+
 
 #### Part 2    : Month-Over-Month Sales
 
