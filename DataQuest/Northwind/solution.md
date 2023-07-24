@@ -46,3 +46,60 @@ SELECT *, SUM(sales) OVER(ORDER BY month_extract) AS running_total
 ````
 
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/951f2265-59fd-4b41-97bc-48b9efaec8b0)
+
+#### Part 1: Month-Over-Month Sales
+
+-	Create a CTE that calculates the total sales for each month.
+Create a second CTE that uses the LAG function with an OVER clause to get the total sales of the previous month.
+In your main query, calculate the month-over-month sales growth rate.
+
+````sql
+
+
+
+````
+
+
+
+````sql
+
+
+
+````
+
+````sql
+
+
+
+````
+
+````sql
+
+
+
+````
+
+````sql
+
+
+
+````
+
+````sql
+
+
+
+````
+
+````sql
+
+
+
+````
+
+````sql
+
+
+
+````
+
