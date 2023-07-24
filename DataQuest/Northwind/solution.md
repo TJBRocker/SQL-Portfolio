@@ -123,6 +123,12 @@ ORDER BY above_avg_count DESC
 ````
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/aa1c11b5-f673-40a5-bf4f-650db6561ca9)
 
+#### Part 4: Percentage of Sales for Each Category
+
+Find the percentage of total sales for each product category.
+
+-  Create a CTE that calculates the total sales for each product category.
+-  Use your CTE in the main query to calculate the percentage of total sales for each product category.
 
 ````sql
 
