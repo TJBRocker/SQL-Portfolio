@@ -47,18 +47,30 @@ SELECT *, SUM(sales) OVER(ORDER BY month_extract) AS running_total
 
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/951f2265-59fd-4b41-97bc-48b9efaec8b0)
 
-#### Part 1: Month-Over-Month Sales
+#### Part 2    : Month-Over-Month Sales
 
--	Create a CTE that calculates the total sales for each month.
-Create a second CTE that uses the LAG function with an OVER clause to get the total sales of the previous month.
-In your main query, calculate the month-over-month sales growth rate.
+-  Create a CTE that calculates the total sales for each month.
+-  Create a second CTE that uses the LAG function with an OVER clause to get the total sales of the previous month.
+-  In your main query, calculate the month-over-month sales growth rate.
 
 ````sql
 
-
+WITH CTE AS(
+SELECT CAST (CONCAT('01-',FORMAT(order_date, 'MM-yyyy')) AS DATE) AS month_extract, 
+	   SUM((1-discount)*unit_price*quantity) AS sales
+  FROM DQ..order_details AS ord_det
+  JOIN DQ..orders AS ord ON ord_det.order_id = ord.order_id
+GROUP BY CAST (CONCAT('01-',FORMAT(order_date, 'MM-yyyy')) AS DATE)
+), CTE2 AS(
+SELECT *, SUM(sales) OVER(ORDER BY month_extract) AS running_total, LAG(sales, 1) OVER( ORDER BY month_extract) AS prev_month_sales
+  FROM CTE
+)
+SELECT month_extract AS month, ROUND(100.0 * (sales-prev_month_sales) / prev_month_sales,2) AS growth
+  FROM CTE2
 
 ````
 
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/85a4fddb-722f-4b60-b161-00b46b77a475)
 
 
 ````sql
