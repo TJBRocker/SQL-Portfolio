@@ -48,7 +48,7 @@ SELECT *, SUM(sales) OVER(ORDER BY month_extract) AS running_total
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/860557cc-2fff-44e2-8bd4-64f96c931b23)
 
 
-#### Part 2    : Month-Over-Month Sales
+#### Part 2: Month-Over-Month Sales
 
 -  Create a CTE that calculates the total sales for each month.
 -  Create a second CTE that uses the LAG function with an OVER clause to get the total sales of the previous month.
@@ -73,12 +73,31 @@ SELECT month_extract AS month, ROUND(100.0 * (sales-prev_month_sales) / prev_mon
 
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/85a4fddb-722f-4b60-b161-00b46b77a475)
 
+#### Part 3: Identifying High-Value Customers
+
+-  Create a CTE that includes customer identification and calculates the value of each of their orders.
+-  In the main query use the CTE to categorize each order as 'Above Average' or 'Average/Below Average' using a CASE statement.
+-  As an extension, try counting how many orders are 'Above Average' for each customer.
 
 ````sql
 
-
+WITH CTE AS (
+SELECT ord.customer_id,ord_det.order_id, ROUND(SUM((1-discount)*unit_price*quantity),0) AS order_value
+  FROM DQ..order_details AS ord_det
+  JOIN DQ..orders AS ord ON ord_det.order_id = ord.order_id
+  JOIN DQ..customers AS cust ON ord.customer_id = cust.customer_id
+GROUP BY ord.customer_id, ord_det.order_id
+)
+SELECT *, 
+	   CASE WHEN order_value > AVG(order_value) OVER() THEN 'above average'
+			ELSE 'below average'
+			END AS classification
+  FROM CTE
 
 ````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/88e2d4a5-75c0-4d2f-9a4c-84e9e19b1072)
+
 
 ````sql
 
