@@ -101,9 +101,28 @@ SELECT *,
 
 ````sql
 
-
+WITH CTE AS (
+SELECT ord.customer_id,ord_det.order_id, ROUND(SUM((1-discount)*unit_price*quantity),0) AS order_value
+  FROM DQ..order_details AS ord_det
+  JOIN DQ..orders AS ord ON ord_det.order_id = ord.order_id
+  JOIN DQ..customers AS cust ON ord.customer_id = cust.customer_id
+GROUP BY ord.customer_id, ord_det.order_id
+), CTE2 AS(
+SELECT *,
+	   CASE WHEN order_value > AVG(order_value) OVER() THEN 'above average'
+			ELSE 'below average'
+			END AS classification
+  FROM CTE
+) 
+SELECT customer_id, COUNT(*) AS above_avg_count
+  FROM CTE2
+WHERE classification = 'above average'
+GROUP BY customer_id
+ORDER BY above_avg_count DESC
 
 ````
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/aa1c11b5-f673-40a5-bf4f-650db6561ca9)
+
 
 ````sql
 
