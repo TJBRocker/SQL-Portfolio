@@ -132,15 +132,46 @@ Find the percentage of total sales for each product category.
 
 ````sql
 
-
+WITH CTE AS(
+SELECT cat.category_id, category_name, SUM(ROUND((1-discount)*ord_det.unit_price*quantity,0)) AS sales
+  FROM DQ..order_details AS ord_det
+  JOIN DQ..products AS prod ON ord_det.product_id = prod.product_id
+  JOIN DQ..categories AS cat ON cat.category_id = prod.category_id
+GROUP BY cat.category_id, category_name
+)
+SELECT *, ROUND(100.0 *sales/ SUM(sales) OVER(),2) AS sales_percentage
+  FROM CTE
+ORDER BY sales_percentage DESC
 
 ````
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f09d5042-bb2d-43d7-9c6e-afae011fd14e)
+
+#### Part 5: Top Products Per Category
+
+-  Create a CTE that calculates the total sales for each product.
+-  Use the ROW_NUMBER function with an OVER clause in the main query to assign a row number to each product within each category based on the total sales.
+-  Use a WHERE clause in the main query to filter out the products that have a row number greater than 3.
 
 ````sql
 
-
+WITH CTE AS(
+SELECT cat.category_id, category_name, prod.product_id, product_name, SUM(ROUND((1-discount)*ord_det.unit_price*quantity,0)) AS sales
+  FROM DQ..order_details AS ord_det
+  JOIN DQ..products AS prod ON ord_det.product_id = prod.product_id
+  JOIN DQ..categories AS cat ON cat.category_id = prod.category_id
+GROUP BY cat.category_id, category_name, prod.product_id, product_name
+), CTE2 AS(
+SELECT *, ROW_NUMBER() OVER(PARTITION BY category_id ORDER BY SALES DESC) AS sales_rank
+  FROM CTE
+)
+SELECT *
+  FROM CTE2
+ WHERE sales_rank <= 3 
 
 ````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/b7e8c52b-b5b2-471b-ae45-31af9d96f1cc)
+
 
 ````sql
 
