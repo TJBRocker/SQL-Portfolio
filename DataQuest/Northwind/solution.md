@@ -172,6 +172,45 @@ SELECT *
 
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/b7e8c52b-b5b2-471b-ae45-31af9d96f1cc)
 
+#### Bonus
+
+-  Identify the top 20% of customers by total purchase volume.
+````sql
+
+WITH CTE AS(
+SELECT ord.customer_id, SUM(quantity) AS item_volume
+  FROM DQ..order_details AS ord_det
+  JOIN DQ..orders AS ord ON ord_det.order_id = ord.order_id
+  JOIN DQ..customers AS cust ON ord.customer_id = cust.customer_id
+GROUP BY ord.customer_id
+
+), CTE2 AS(
+SELECT *, PERCENT_RANK() OVER(ORDER BY item_volume DESC) AS percentile
+  FROM CTE
+)
+
+SELECT customer_id, item_volume
+  FROM CTE2
+ WHERE percentile <=0.2
+
+````
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/d8925201-9a58-42a9-9745-40dd847c9359)
+
+-  
+
+````sql
+
+
+
+````
+-  
+````sql
+
+
+
+````
+
+-  
 
 ````sql
 
@@ -185,9 +224,10 @@ SELECT *
 
 ````
 
-````sql
 
 
 
-````
+
+
+
 
