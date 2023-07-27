@@ -19,12 +19,6 @@ Throughout this guided project, you’ll frequently need to reference the schema
 
 ### Questions & Solutions
 
-Familiarize yourself with the Northwind company by writing the following queries. Consider saving them as views to help with the rest of the project:
-
--  Combine orders and customers tables to get more detailed information about each order.
--  Combine order_details, products, and orders tables to get detailed order information, including the product name and quantity.
--  Combine employees and orders tables to see who is responsible for each order.
-
 #### Part 1: Monthly Sales
 
 -  Join the Orders and Order_Details tables to bring together the data you need.
