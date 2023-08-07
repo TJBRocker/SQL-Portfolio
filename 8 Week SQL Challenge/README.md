@@ -148,6 +148,7 @@ Danny, the CEO of this trendy fashion company has asked you to assist the teamâ€
 
 ### Entity Relationship Diagram
 
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/21cd548e-ba13-4f66-ba5c-6c3a03c7558b)
 
 ---
 
@@ -167,6 +168,7 @@ Danny has asked for your assistance to analyse aggregated metrics for an example
 
 ### Entity Relationship Diagram
 
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f1f99172-33ba-45cd-977b-45ee58266a02)
 
 ---
 
