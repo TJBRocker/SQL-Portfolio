@@ -18,7 +18,7 @@ Because Danny had a few years of experience as a data scientist - he was very aw
 
 He has prepared for us an entity relationship diagram of his database design but requires further assistance to clean his data and apply some basic calculations so he can better direct his runners and optimise Pizza Runner’s operations.
 
-## Entity Relationship Diagram
+### Entity Relationship Diagram
 
 ![image](https://user-images.githubusercontent.com/59825363/196281592-98f040a4-511d-49e4-8225-1b50abd98296.png)
 
