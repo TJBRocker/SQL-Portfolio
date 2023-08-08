@@ -11,9 +11,9 @@ Danny wants to use the data to answer a few simple questions about his customers
 
 Danny has shared with you 3 key datasets for this case study:
 
--  sales
--  menu
--  members
+-  `sales`
+-  `menu`
+-  `members`
 
 ## Entity Relationship Diagram
 
