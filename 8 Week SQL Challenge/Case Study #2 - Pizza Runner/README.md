@@ -74,11 +74,11 @@ He has prepared for us an entity relationship diagram of his database design but
   - `rating`
   - `order_time`
   - `pickup_time`
-  - `Time between order and pickup`
-  - `Delivery duration`
-  - `Average speed`
-Total number of pizzas
-If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
+  - Time between order and pickup
+  - Delivery duration
+  - Average speed
+  - Total number of pizzas
+5.  If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
 
 ### E. Bonus Questions
 
