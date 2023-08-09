@@ -1,5 +1,6 @@
 #  UNDER CONTRUCTION
 
+
 # 8 Week SQL Challenge
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/59e3d4e6-3985-4195-8e11-5bfaf903984e)
 
