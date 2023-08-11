@@ -2,6 +2,8 @@
 
 ![image](https://user-images.githubusercontent.com/59825363/196279299-8c5b00b1-80a3-4d30-b169-00835449c228.png)
 
+**_My solution_** can be found [HERE!](https://github.com/TJBRocker/SQL-Portfolio/blob/main/8%20Week%20SQL%20Challenge/Case%20Study%20%232%20-%20Pizza%20Runner/A.%20Solution.md)
+
 ## Task
 
 Did you know that over 115 million kilograms of pizza is consumed daily worldwide??? (Well according to Wikipedia anyway…)
@@ -78,7 +80,8 @@ He has prepared for us an entity relationship diagram of his database design but
     * Delivery duration
     * Average speed
     * Total number of pizzas
-5.  If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
+    * 
+5.  If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled. How much money does Pizza Runner have left over after these deliveries?
 
 ### E. Bonus Questions
 
