@@ -17,6 +17,17 @@ Through these study methods I've found myself using SQLite, MySQL and MS SQL Ser
 - Data cleaning
 - and much more!
 
+## Braintree Data Analyst Challenge
+***
+
+According to [Nick Singh](linkedin.com/in/nick-singh-tech/) this is a real PayPal interview coding assignment. After completing various challenges and tutorials I found this realtively straightforward, but check out my solution at the following [LINK](https://github.com/TJBRocker/SQL-Portfolio/tree/main/Braintree%20Data%20Analyst%20Challenge)
+
+## Dataquest Northwind Traders
+***
+A smaller project using different trading data. Involves: works with dates, window functions, aggregate functions, CTEs and CASE statements.
+
+Head over [HERE](https://github.com/TJBRocker/SQL-Portfolio/blob/main/DataQuest/Northwind/solution.md) for my solution.
+
 ## 8 Week SQL challenge
 ***
 
@@ -24,7 +35,3 @@ Following numerous data gurus on all platforms led me to [Danny Ma's](https://ww
 
 There are eight different case studies over the entire challenge, which I'm going to update my process as I get along saved [HERE](https://github.com/TJBRocker/SQL-Portfolio/tree/main/8%20Week%20SQL%20Challenge)
 
-## Braintree Data Analyst Challenge
-***
-
-According to [Nick Singh](linkedin.com/in/nick-singh-tech/) this is a real PayPal interview coding assignment. After completing various challenges and tutorials I found this realtively straightforward, but check out my solution at the following [LINK](https://github.com/TJBRocker/SQL-Portfolio/tree/main/Braintree%20Data%20Analyst%20Challenge)
