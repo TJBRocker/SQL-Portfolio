@@ -24,7 +24,7 @@ According to [Nick Singh](linkedin.com/in/nick-singh-tech/) this is a real PayPa
 
 ## Dataquest Northwind Traders
 ***
-A smaller project using different trading data. Involves: works with dates, window functions, aggregate functions, CTEs and CASE statements.
+A smaller project using different trading data. Involves: working with dates, window functions, aggregate functions, CTEs and CASE statements.
 
 Head over [HERE](https://github.com/TJBRocker/SQL-Portfolio/blob/main/DataQuest/Northwind/solution.md) for my solution.
 
