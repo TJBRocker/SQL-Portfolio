@@ -233,7 +233,8 @@ ORDER BY product_category, product_name
 
 ````
 
-![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/79c84022-57f3-4097-b735-1f2856ceed04)
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/9a8dc888-f75f-4474-a4bc-fa33f758555c)
+
 
 Product funnel analysis:
 
@@ -272,7 +273,8 @@ ORDER BY product_name
 
 ````
 
-![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/1e669f83-f9ac-461b-b427-e082757ccdc0)
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/85ceb700-c6a5-42af-be43-dc08235ca8e8)
+
 
 Category funnel:
 
@@ -312,7 +314,8 @@ ORDER BY product_category
 
 ````
 
-![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/bd9dc820-3644-4775-9717-b0f92d127f03)
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/733fa088-2bdb-49a8-9068-c7cd68dededb)
+
 
 
 Additionally, create another table which further aggregates the data for the above points but this time for each product category instead of individual products.
@@ -320,10 +323,70 @@ Additionally, create another table which further aggregates the data for the abo
 Use your 2 new output tables - answer the following questions:
 
 1.  Which product had the most views, cart adds and purchases?
+
+````sql
+
+  SELECT TOP 1 product_name, SUM(viewed+added+purchased) AS total_actions
+    FROM DannySQLChallenge6..combo_funnel
+GROUP BY product_name
+ORDER BY total_actions DESC
+
+````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/dbb929bb-a49f-4c88-b653-75a16fb8f912)
+
+
 2.  Which product was most likely to be abandoned?
+
+````sql
+
+  SELECT TOP 1 product_name, abandoned
+    FROM DannySQLChallenge6..combo_funnel
+ORDER BY abandoned DESC
+
+
+````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/7fbc2fa4-4329-4aba-b8d4-fd93c8c1bc72)
+
+
 3.  Which product had the highest view to purchase percentage?
+
+````sql
+
+  SELECT TOP 1 product_name, 
+		 CONCAT(CAST(ROUND(100.0*purchased/viewed,2) AS float),'%') AS view_purch_ratio
+    FROM DannySQLChallenge6..combo_funnel
+ORDER BY 2 DESC
+
+````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/687c66cb-2cab-4516-a19b-1dd09949e294)
+
 4.  What is the average conversion rate from view to cart add?
+
+````sql
+
+  SELECT CONCAT(ROUND(AVG(CAST(100.0*added/viewed AS float)),2),'%')  AS add_conversion
+    FROM DannySQLChallenge6..combo_funnel
+
+````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/fee5d095-ae10-496d-b5f0-6293d432595e)
+
+
 5.  What is the average conversion rate from cart add to purchase?
+
+````sql
+
+  SELECT CONCAT(ROUND(AVG(CAST(100.0*added/viewed AS float)),2),'%')  AS add_conversion,
+		 CONCAT(ROUND(AVG(CAST(100.0*purchased/added AS float)),2),'%')  AS purch_conversion
+    FROM DannySQLChallenge6..combo_funnel
+
+````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/72731100-7700-4f86-9a0c-29327e880b05)
+
 
 ### C. Campaigns Analysis
 
@@ -343,9 +406,59 @@ Generate a table that has 1 single row for every unique `visit_id` record and ha
 
 ````sql
 
+DROP TABLE IF EXISTS DannySQLChallenge6..campaign_analysis
+CREATE TABLE DannySQLChallenge6..campaign_analysis
+ (user_id VARCHAR(50),
+ visit_id VARCHAR(255),
+ visit_start_time TIMESTAMP,
+ page_views INT,
+ cart_adds INT,
+ purchase INT,
+ ad_impressions INT,
+ clicks INT,
+ campaign_name VARCHAR(50),
+ cart_products VARCHAR(255)
+ )
 
+
+
+ WITH CTE AS ( 
+ SELECT  user_id,
+		 e.visit_id,
+		 STRING_AGG(page_name, ', ') WITHIN GROUP(ORDER BY sequence_number ASC) AS cart_products
+    FROM DannySQLChallenge6..events AS e
+    JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+    JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+	JOIN DannySQLChallenge6..users AS u ON u.cookie_id = e.cookie_id
+   WHERE e.event_type = 2
+GROUP BY user_id, e.visit_id
+)   
+INSERT INTO  DannySQLChallenge6..campaign_analysis
+SELECT    u.user_id,
+		  e.visit_id, 
+	      MIN(event_time) AS visit_start_time,
+		  SUM(CASE WHEN e.event_type = 1 THEN 1 ELSE 0 END) AS page_views,
+		  SUM(CASE WHEN e.event_type = 2 THEN 1 ELSE 0 END) AS cart_adds,
+		  SUM(CASE WHEN e.event_type = 3 THEN 1 ELSE 0 END) AS purchase,
+		  SUM(CASE WHEN e.event_type = 4 THEN 1 ELSE 0 END) AS ad_impressions,
+	 	  SUM(CASE WHEN e.event_type = 5 THEN 1 ELSE 0 END) AS clicks,
+		  campaign_name,
+		  cart_products
+     FROM DannySQLChallenge6..events AS e
+     JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+     JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+     JOIN DannySQLChallenge6..users AS u ON u.cookie_id = e.cookie_id
+ LEFT JOIN DannySQLChallenge6..campaign_identifier AS ci ON e.event_time BETWEEN ci.start_date AND ci.end_date
+ LEFT JOIN CTE AS cte ON CTE.visit_id = e.visit_id
+ GROUP BY u.user_id, e.visit_id, campaign_name, cart_products
+ ORDER BY u.user_id, e.visit_id
 
 ````
+
+Snapshot:
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/98cc5a77-ecc1-4106-85ca-bf7ab98775ef)
+
 
 ````sql
 
