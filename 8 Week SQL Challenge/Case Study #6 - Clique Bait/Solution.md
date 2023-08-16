@@ -11,13 +11,69 @@ Using the available datasets - answer the following questions using a single que
 ````
 
 2.  How many cookies does each user have on average?
+
+````sql
+
+
+
+````
+
 3.  What is the unique number of visits by all users per month?
+
+````sql
+
+
+
+````
+
 4.  What is the number of events for each event type?
+
+````sql
+
+
+
+````
+
 5.  What is the percentage of visits which have a purchase event?
+
+````sql
+
+
+
+````
+
 6.  What is the percentage of visits which view the checkout page but do not have a purchase event?
+
+````sql
+
+
+
+````
+
 7.  What are the top 3 pages by number of views?
+
+````sql
+
+
+
+````
+
 8.  What is the number of views and cart adds for each product category?
+
+````sql
+
+
+
+````
+
 9.  What are the top 3 products by purchases?
+
+````sql
+
+
+
+````
+
 
 ### B. Product Funnel Analysis
 
