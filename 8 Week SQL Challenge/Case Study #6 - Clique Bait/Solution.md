@@ -6,9 +6,13 @@ Using the available datasets - answer the following questions using a single que
 
 ````sql
 
-
+SELECT COUNT(DISTINCT user_id) AS total_users
+  FROM DannySQLChallenge6..users
 
 ````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/a2ec1b84-60dc-4e5c-85b6-fc18c8e8fe00)
+
 
 2.  How many cookies does each user have on average?
 
