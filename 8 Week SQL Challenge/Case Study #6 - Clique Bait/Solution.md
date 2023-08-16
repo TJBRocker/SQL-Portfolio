@@ -192,6 +192,129 @@ Using a single SQL query - create a new output table which has the following det
 -  How many times was each product added to a cart but not purchased (abandoned)?
 -  How many times was each product purchased?
 
+I initially did this as one big table and then split it out into two, I really think that one table is the way forward as you can perform more queries that way
+
+Combo table:
+
+````sql
+
+ DROP TABLE IF EXISTS DannySQLChallenge6..combo_funnel
+ CREATE TABLE DannySQLChallenge6..combo_funnel
+ (product_category VARCHAR(50),
+ product_name 
+ VARCHAR(50),
+ viewed INT,
+ added INT,
+ abandoned INT,
+ purchased INT
+ )
+
+
+WITH CTE AS(
+  SELECT visit_id, product_category, page_name AS product_name,
+		 CASE WHEN e.event_type = 1 THEN 1 ELSE 0 END AS page_view,
+		 CASE WHEN e.event_type = 2 THEN 1 ELSE 0 END AS cart_add,
+		 FIRST_VALUE(event_name) OVER(PARTITION BY visit_id ORDER BY sequence_number DESC) AS last_action
+    FROM DannySQLChallenge6..events AS e
+    JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+    JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+)
+INSERT INTO DannySQLChallenge6..combo_funnel
+SELECT product_category,
+	   product_name,
+	   SUM(page_view) AS viewed, 
+	   SUM(cart_add) AS added,
+	   SUM(CASE WHEN cart_add = 1 AND LOWER(last_action) <> 'purchase' THEN 1 ELSE 0 END) AS abandoned,
+	   SUM(CASE WHEN LOWER(last_action) = 'purchase' AND cart_add =  1 THEN 1 ELSE 0 END) AS purchased
+  FROM CTE
+ WHERE product_category IS NOT NULL
+GROUP BY product_category, product_name
+ORDER BY product_category, product_name
+
+````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/79c84022-57f3-4097-b735-1f2856ceed04)
+
+Product funnel analysis:
+
+````sql
+
+ DROP TABLE IF EXISTS DannySQLChallenge6..product_funnel
+ CREATE TABLE DannySQLChallenge6..product_funnel
+ (
+ product_name VARCHAR(50),
+ viewed INT,
+ added INT,
+ abandoned INT,
+ purchased INT
+ )
+ 
+ WITH CTE AS(
+  SELECT visit_id, product_category, page_name AS product_name,
+		 CASE WHEN e.event_type = 1 THEN 1 ELSE 0 END AS page_view,
+		 CASE WHEN e.event_type = 2 THEN 1 ELSE 0 END AS cart_add,
+		 FIRST_VALUE(event_name) OVER(PARTITION BY visit_id ORDER BY sequence_number DESC) AS last_action
+    FROM DannySQLChallenge6..events AS e
+    JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+    JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+)
+INSERT INTO DannySQLChallenge6..product_funnel
+SELECT 
+	   product_name,	   
+	   SUM(page_view) AS viewed, 
+	   SUM(cart_add) AS added,
+	   SUM(CASE WHEN cart_add = 1 AND LOWER(last_action) <> 'purchase' THEN 1 ELSE 0 END) AS abandoned,
+	   SUM(CASE WHEN LOWER(last_action) = 'purchase' AND cart_add =  1 THEN 1 ELSE 0 END) AS purchased
+  FROM CTE
+ WHERE product_category IS NOT NULL
+GROUP BY  product_name
+ORDER BY product_name
+
+````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/1e669f83-f9ac-461b-b427-e082757ccdc0)
+
+Category funnel:
+
+````sql
+
+ DROP TABLE IF EXISTS DannySQLChallenge6..category_funnel
+ CREATE TABLE DannySQLChallenge6..category_funnel
+ (
+ product_category VARCHAR(50),
+ viewed INT,
+ added INT,
+ abandoned INT,
+ purchased INT
+ )
+
+ WITH CTE AS(
+  SELECT visit_id, product_category, page_name AS product_name,
+		 CASE WHEN e.event_type = 1 THEN 1 ELSE 0 END AS page_view,
+		 CASE WHEN e.event_type = 2 THEN 1 ELSE 0 END AS cart_add,
+		 FIRST_VALUE(event_name) OVER(PARTITION BY visit_id ORDER BY sequence_number DESC) AS last_action
+    FROM DannySQLChallenge6..events AS e
+    JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+    JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+)
+
+INSERT INTO DannySQLChallenge6..category_funnel
+SELECT 
+	   product_category,	   
+	   SUM(page_view) AS viewed, 
+	   SUM(cart_add) AS added,
+	   SUM(CASE WHEN cart_add = 1 AND LOWER(last_action) <> 'purchase' THEN 1 ELSE 0 END) AS abandoned,
+	   SUM(CASE WHEN LOWER(last_action) = 'purchase' AND cart_add =  1 THEN 1 ELSE 0 END) AS purchased
+  FROM CTE
+ WHERE product_category IS NOT NULL
+GROUP BY  product_category
+ORDER BY product_category
+
+````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/bd9dc820-3644-4775-9717-b0f92d127f03)
+
+
 Additionally, create another table which further aggregates the data for the above points but this time for each product category instead of individual products.
 
 Use your 2 new output tables - answer the following questions:
@@ -216,4 +339,24 @@ Generate a table that has 1 single row for every unique `visit_id` record and ha
 -  `impression`: count of ad impressions for each visit
 -  `click`: count of ad clicks for each visit
 -  (Optional column) `cart_products`: a comma separated text value with products added to the cart sorted by the order they were added to the cart (hint: use the `sequence_number`)
+
+
+````sql
+
+
+
+````
+
+````sql
+
+
+
+````
+
+````sql
+
+
+
+````
+
 
