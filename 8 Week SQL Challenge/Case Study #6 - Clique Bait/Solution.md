@@ -72,7 +72,9 @@ ORDER BY e.event_type, event_name
 
 ````sql
 
-SELECT CONCAT(CAST(ROUND(100.0*COUNT(DISTINCT visit_id)/(SELECT COUNT(DISTINCT visit_id) FROM DannySQLChallenge6..events),2) AS FLOAT),'%') AS percentage_purchase
+SELECT CONCAT(CAST(ROUND(100.0*COUNT(DISTINCT visit_id)/
+			 (SELECT COUNT(DISTINCT visit_id) FROM DannySQLChallenge6..events),2) 
+			  AS FLOAT),'%') AS percentage_purchase
   FROM DannySQLChallenge6..events AS e
   JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
  WHERE e.event_type = 3
@@ -86,34 +88,100 @@ SELECT CONCAT(CAST(ROUND(100.0*COUNT(DISTINCT visit_id)/(SELECT COUNT(DISTINCT v
 
 ````sql
 
+WITH CTE AS(
+SELECT visit_id,
+	   CASE WHEN e.event_type = 3 THEN 1 ELSE 0 END AS purchased,
+	   CASE WHEN ph.page_id = 12 THEN 1 ELSE 0 END AS checkout
+  FROM DannySQLChallenge6..events AS e
+  JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+  JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+  )
+
+SELECT CONCAT(CAST(ROUND(100.0*(SUM(checkout) - SUM(purchased)) 
+	   / (COUNT(DISTINCT visit_id)),2) AS FLOAT),'%') AS checkout_visit_without_purchase
+  FROM CTE
 
 
 ````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/09c853b8-36f5-44f5-8977-e5731d3dc40e)
+
 
 7.  What are the top 3 pages by number of views?
 
 ````sql
 
-
+  SELECT TOP 3 ph.page_id,page_name, COUNT(*) AS page_views
+    FROM DannySQLChallenge6..events AS e
+    JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+    JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+   WHERE event_name = 'Page View'
+GROUP BY ph.page_id,page_name
+ORDER BY 3 DESC
 
 ````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/af02ca4d-1902-484a-b886-bea33c54e03f)
+
+I'm going to exclude any pages that are not product pages
+
+````sql
+
+  SELECT TOP 3 ph.page_id,page_name, COUNT(*) AS page_views
+    FROM DannySQLChallenge6..events AS e
+    JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+    JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+   WHERE event_name = 'Page View' AND e.page_id NOT IN (1,2,12)
+GROUP BY ph.page_id,page_name
+ORDER BY 3 DESC
+
+````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f0c83f48-53d1-4c8a-ae3a-a9734afb693d)
 
 8.  What is the number of views and cart adds for each product category?
 
 ````sql
 
+  SELECT product_category,
+	     SUM(CASE WHEN e.event_type = 1 THEN 1 ELSE 0 END) AS views_count,
+	     SUM(CASE WHEN e.event_type = 2 THEN 1 ELSE 0 END) AS cart_count
+    FROM DannySQLChallenge6..events AS e
+    JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+    JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+   WHERE product_category IS NOT NULL
+GROUP BY product_category
+ORDER BY product_category
 
 
 ````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/1633ff86-ce33-4048-a970-af4d03ad4516)
+
 
 9.  What are the top 3 products by purchases?
 
 ````sql
 
+WITH purchases_id AS(
+SELECT visit_id
+  FROM DannySQLChallenge6..events AS e
+  JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+ WHERE LOWER(event_name) = 'purchase'
+)
 
+SELECT TOP 3 page_name AS product_purchased,
+	   COUNT(*) number_purchased
+  FROM DannySQLChallenge6..events AS e
+  JOIN DannySQLChallenge6..page_hierarchy AS ph ON e.page_id = ph.page_id
+  JOIN DannySQLChallenge6..event_identifier AS ei ON ei.event_type = e.event_type
+WHERE LOWER(event_name) = 'add to cart' AND visit_id IN (SELECT * FROM purchases_id)
+GROUP BY page_name
+ORDER BY number_purchased DESC
 
 ````
 
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/d19c5251-86ad-40c7-9cc8-e2db5d6dbb54)
 
 ### B. Product Funnel Analysis
 
