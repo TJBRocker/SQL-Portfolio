@@ -131,13 +131,14 @@ CTE2 AS(
 SELECT *, ROW_NUMBER() OVER(PARTITION BY continent_code ORDER BY growth_percent DESC) AS growth_rank
   FROM CTE1
 )
-SELECT country_code,country_name, continent_code, continent_name, growth_percent, growth_rank
+SELECT country_code,country_name, continent_code, continent_name, CONCAT(growth_percent,'%') AS growth_percent, growth_rank
   FROM CTE2 AS ct
  WHERE growth_rank BETWEEN 10 AND 12
 
 ````
 
-<img width="600" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/ae104484-b21e-4cae-9058-82206f182009">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/b1e69429-1028-48c0-8297-5741192c85e2)
+
 
 
 ### 3. For the year 2012, create a 3 column, 1 row report showing the percent share of gdp_per_capita for the following regions:
