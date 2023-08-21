@@ -195,14 +195,15 @@ SELECT continent_group,
        ROUND(100.0*SUM(gdp_per_capita)/(SELECT SUM(gdp_per_capita) FROM CTE),2) AS sum_gdp_per_capita
   FROM CTE
 GROUP BY continent_group)
-SELECT SUM(CASE WHEN continent_group = 'Asia' THEN sum_gdp_per_capita ELSE 0 END) AS Asia,
-	   SUM(CASE WHEN continent_group = 'Europe' THEN sum_gdp_per_capita ELSE 0 END) AS Europe,
-	   SUM(CASE WHEN continent_group = 'Rest of World' THEN sum_gdp_per_capita ELSE 0 END) AS Rest_of_World
+SELECT CONCAT(SUM(CASE WHEN continent_group = 'Asia' THEN sum_gdp_per_capita ELSE 0 END),'%') AS Asia,
+       CONCAT(SUM(CASE WHEN continent_group = 'Europe' THEN sum_gdp_per_capita ELSE 0 END),'%') AS Europe,
+       CONCAT(SUM(CASE WHEN continent_group = 'Rest of World' THEN sum_gdp_per_capita ELSE 0 END),'%') AS Rest_of_World
   FROM CTE2
 
 ````
 
-<img width="250" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/825072c7-c54e-42aa-8686-96ee92d14741">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/bd6285fb-4ee9-483a-9fb8-fe7654c245dc)
+
 
 
 ### 4a. What is the count of countries and sum of their related gdp_per_capita values for the year 2007 where the string 'an' (case insensitive) appears anywhere in the country name?
@@ -280,7 +281,7 @@ GROUP BY YEAR
 
 ````sql
 
-SELECT continent_name, ct.country_code, country_name, gdp_per_capita
+SELECT continent_name, ct.country_code, country_name, ROUND(gdp_per_capita,2) AS gdp_per_capita
   FROM Braintree..per_capita AS ct
   JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
   JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
@@ -290,7 +291,8 @@ SELECT continent_name, ct.country_code, country_name, gdp_per_capita
 ````
 
 
-<img width="400" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/31452d7b-e96e-4b2d-b4b1-71d4bfba49e0">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/bd10b5ea-caf7-4d42-b0bf-cd3478aabf9f)
+
 
 
 #### b. order this list by:
@@ -300,7 +302,7 @@ SELECT continent_name, ct.country_code, country_name, gdp_per_capita
 
 ````sql
 
-SELECT continent_name, ct.country_code, country_name, gdp_per_capita
+SELECT continent_name, ct.country_code, country_name, ROUND(gdp_per_capita,2) AS gdp_per_capita
   FROM Braintree..per_capita AS ct
   JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
   JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
@@ -310,28 +312,23 @@ ORDER BY continent_name ASC, SUBSTRING(country_name, 2,3) DESC
 
 ````
 
-
-<img width="388" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/b45c833d-3fdc-40db-8a30-fd6f7e6cde82">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/b69e9184-5dd4-40e4-b712-88a608eb2d1c)
 
 
 #### c. create a running total of gdp_per_capita by continent_name
 
 ````sql
 
-WITH CTE AS(
-SELECT continent_name, ct.country_code, country_name, ROUND(gdp_per_capita,0) AS gdp_per_capita,
-	   SUM(gdp_per_capita)OVER(PARTITION BY continent_name ORDER BY continent_name, SUBSTRING(country_name, 2,3) DESC) AS running_total
+SELECT continent_name, ct.country_code, country_name, ROUND(gdp_per_capita,2) AS gdp_per_capita,
+	   SUM(ROUND(gdp_per_capita,2)) OVER(PARTITION BY continent_name ORDER BY continent_name, SUBSTRING(country_name, 2,3) DESC) AS running_total
   FROM Braintree..per_capita AS ct
   JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
   JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
   JOIN Braintree..continents AS cts ON cts.continent_code = cm.continent_code
  WHERE year = '2009'
- )
-
- SELECT continent_name, country_code, country_name, gdp_per_capita, ROUND(running_total,2) AS running_total
-   FROM CTE
 
 ````
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/6fee8d0e-0b55-4abd-bf6c-f24cafb5881d)
 
 
 <img width="437" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f71d07bb-3c9f-44fd-9f0f-f7783d2eecaf">
@@ -349,7 +346,7 @@ SELECT continent_name, ct.country_code, country_name, ROUND(gdp_per_capita,0) AS
 
 WITH CTE AS(
 SELECT continent_name, ct.country_code, country_name, gdp_per_capita,
-	   SUM(gdp_per_capita)OVER(PARTITION BY continent_name ORDER BY continent_name, SUBSTRING(country_name, 2,3) DESC) AS running_total
+	   SUM(ROUND(gdp_per_capita,2)) OVER(PARTITION BY continent_name ORDER BY continent_name, SUBSTRING(country_name, 2,3) DESC) AS running_total
   FROM Braintree..per_capita AS ct
   JOIN Braintree..countries AS cs ON ct.country_code = cs.country_code
   JOIN Braintree..new_continent_map AS cm ON cm.country_code = ct.country_code
@@ -366,7 +363,8 @@ SELECT continent_name, country_code, country_name, ROUND(gdp_per_capita,2) AS gd
 
 ````
 
-<img width="443" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/cc911b89-543a-4b0f-be70-0faabadbc14d">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/42c5def9-9b28-4359-b3c5-78b816705044)
+
 
 ### 7. Find the country with the highest average gdp_per_capita for each continent for all years. Now compare your list to the following data set. Please describe any and all mistakes that you can find with the data set below. Include any code that you use to help detect these mistakes.
 
@@ -402,4 +400,5 @@ SELECT *
 
 ````
 
-<img width="511" alt="image" src="https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/eb4116cc-2e6c-4e9a-b3be-79cb31d3dc80">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/2d010c13-f672-48f6-b9fa-96c649990555)
+
