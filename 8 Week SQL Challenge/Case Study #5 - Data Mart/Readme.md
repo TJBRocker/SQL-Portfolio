@@ -37,6 +37,7 @@ In a single query, perform the following operations and generate a new table in 
 
 -  Add a new column called `age_band` after the original `segment` column using the following mapping on the number inside the `segment` value
 
+| :-: |
 |segment|age_band|  
 |------|------|
 |1|Young Adults|
