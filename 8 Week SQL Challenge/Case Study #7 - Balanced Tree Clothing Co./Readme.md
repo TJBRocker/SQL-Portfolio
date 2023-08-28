@@ -14,35 +14,35 @@ Danny, the CEO of this trendy fashion company has asked you to assist the team�
 
 ## Case Study Questions
 
-High Level Sales Analysis
+### High Level Sales Analysis
 
-What was the total quantity sold for all products?
-What is the total generated revenue for all products before discounts?
-What was the total discount amount for all products?
+1.  What was the total quantity sold for all products?
+2.  What is the total generated revenue for all products before discounts?
+3.  What was the total discount amount for all products?
 
-Transaction Analysis
+### Transaction Analysis
 
-How many unique transactions were there?
-What is the average unique products purchased in each transaction?
-What are the 25th, 50th and 75th percentile values for the revenue per transaction?
-What is the average discount value per transaction?
-What is the percentage split of all transactions for members vs non-members?
-What is the average revenue for member transactions and non-member transactions?
+1.  How many unique transactions were there?
+2.  What is the average unique products purchased in each transaction?
+3.  What are the 25th, 50th and 75th percentile values for the revenue per transaction?
+4.  What is the average discount value per transaction?
+5.  What is the percentage split of all transactions for members vs non-members?
+6.  What is the average revenue for member transactions and non-member transactions?
 
-Product Analysis
+### Product Analysis
 
-What are the top 3 products by total revenue before discount?
-What is the total quantity, revenue and discount for each segment?
-What is the top selling product for each segment?
-What is the total quantity, revenue and discount for each category?
-What is the top selling product for each category?
-What is the percentage split of revenue by product for each segment?
-What is the percentage split of revenue by segment for each category?
-What is the percentage split of total revenue by category?
-What is the total transaction “penetration” for each product? (hint: penetration = number of transactions where at least 1 quantity of a product was purchased divided by total number of transactions)
-What is the most common combination of at least 1 quantity of any 3 products in a 1 single transaction?
+1.  What are the top 3 products by total revenue before discount?
+2.  What is the total quantity, revenue and discount for each segment?
+3.  What is the top selling product for each segment?
+4.  What is the total quantity, revenue and discount for each category?
+5.  What is the top selling product for each category?
+6.  What is the percentage split of revenue by product for each segment?
+7.  What is the percentage split of revenue by segment for each category?
+8.  What is the percentage split of total revenue by category?
+9.  What is the total transaction “penetration” for each product? (hint: penetration = number of transactions where at least 1 quantity of a product was purchased divided by total number of transactions)
+10.  What is the most common combination of at least 1 quantity of any 3 products in a 1 single transaction?
 
-Reporting Challenge
+### Reporting Challenge
 
 Write a single SQL script that combines all of the previous questions into a scheduled report that the Balanced Tree team can run at the beginning of each month to calculate the previous month’s values.
 
