@@ -38,27 +38,17 @@ SELECT runner_id,
 ### 4.  How many of each type of pizza was delivered?
 
 ````sql
-  SELECT pn.pizza_name, 
-         COUNT(co.pizza_id) AS pizza_order_count
-    FROM DannySQLChallenge2..customer_orders AS co
-    JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
+SELECT pn.pizza_name, COUNT(co.pizza_id) AS pizza_order_count
+  FROM DannySQLChallenge2..customer_orders AS co
+  JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
+  JOIN DannySQLChallenge2..runner_order_new AS ron ON co.order_id = ron.order_id
+ WHERE cancellation = ''
 GROUP BY pn.pizza_id, pn.pizza_name
 
--- getting errors with datatype so will convert these to varchar
-
-ALTER TABLE DannySQLChallenge2..pizza_names
-ALTER COLUMN pizza_name VARCHAR(50)
-
--- Will now try rerunning the query
-
-  SELECT pn.pizza_name, 
-	 COUNT(co.pizza_id) AS pizza_order_count
-    FROM DannySQLChallenge2..customer_orders AS co
-    JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
-GROUP BY pn.pizza_id, pn.pizza_name
 
 ````
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197054641-bf943784-20e6-40ef-95d8-18e3f644d0e8.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/055335db-784b-42d8-afed-28fb5d4af1da)
+
 
 
 ### 5.  How many Vegetarian and Meatlovers were ordered by each customer?
