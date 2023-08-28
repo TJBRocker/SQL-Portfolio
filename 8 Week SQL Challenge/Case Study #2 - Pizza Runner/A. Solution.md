@@ -62,7 +62,20 @@ GROUP BY customer_id, pn.pizza_id, pn.pizza_name;
 
 ````
 
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197054928-6fb9843f-4591-4f88-b5a0-fefda164d543.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/26aaa7d1-f543-4446-ae19-2396993c7e78)
+
+Excluding cancellations
+
+````sql
+SELECT customer_id, pn.pizza_name, COUNT(co.pizza_id) AS pizza_order_count
+  FROM DannySQLChallenge2..customer_orders AS co
+  JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
+  JOIN DannySQLChallenge2..runner_order_new AS ron ON co.order_id = ron.order_id
+ WHERE cancellation = ''
+GROUP BY customer_id, pn.pizza_id, pn.pizza_name
+
+````
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/9f61051a-295e-46db-89ff-88561eb8fd45)
 
 
 ### 6.  What was the maximum number of pizzas delivered in a single order?
@@ -80,21 +93,21 @@ SELECT max(pizzas_per_order) AS max_ordered
   FROM pizza_orders
   
 ````
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197054992-5c896cab-cdd2-4e8f-bd44-5e226fc313e4.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/91ab5cba-b2f3-43cf-a78b-2de43ec84009)
 
 ### 7.  For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 
 ````sql
-  SELECT co.customer_id,
-	 SUM(CASE WHEN co.exclusions <> '' OR co.extras <> '' THEN 1 ELSE 0 END) AS pizza_changes,
-	 SUM(CASE WHEN co.exclusions = '' OR co.extras = '' THEN 1 ELSE 0 END) AS no_changes
-    FROM DannySQLChallenge2..customer_orders AS co
-    JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
-   WHERE distance <> ''
+SELECT co.customer_id,
+	   SUM(CASE WHEN co.exclusions <> '' OR co.extras <> '' THEN 1 ELSE 0 END) AS pizza_changes,
+	   SUM(CASE WHEN co.exclusions = '' AND co.extras = '' THEN 1 ELSE 0 END) AS no_changes
+  FROM DannySQLChallenge2..customer_orders AS co
+  JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
+WHERE distance <> '' AND cancellation = ''
 GROUP BY customer_id
 ````
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197055151-66491012-4220-4bde-9bea-a272f4dfc3c5.png">
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/a0e25951-aaab-4b4d-a2f5-36c1ec418d12)
 
 ### 8.  How many pizzas were delivered that had both exclusions and extras?
 
@@ -106,43 +119,36 @@ GROUP BY customer_id
    WHERE distance <> '' AND exclusions <> '' AND extras <> ''
 GROUP BY co.order_id
 ````
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197055212-d643613b-f2b5-42c0-bbe8-89430e911179.png">
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/58deb0ef-1d1f-40d3-937b-c0c0d4e0a7e8)
 
 
 ### 9.  What was the total volume of pizzas ordered for each hour of the day?
 
 ````sql
--- Will include version where orders were and weren't cancelled
-
-   SELECT COUNT(co.order_id) AS pizzas_ordered, 
-	  DATEPART(HOUR, order_time) AS hour
-     FROM DannySQLChallenge2..customer_orders AS co
-     JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
-    WHERE distance <> ''
- GROUP BY DATEPART(HOUR, order_time)
-
-   SELECT COUNT(co.order_id) AS pizzas_ordered, 
- 	  DATEPART(HOUR, order_time) AS hour
-     FROM DannySQLChallenge2..customer_orders AS co
-     JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
+ SELECT DATEPART(HOUR, order_time) AS hour, COUNT(co.order_id) AS pizzas_ordered
+  FROM DannySQLChallenge2..customer_orders AS co
+  JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
  GROUP BY DATEPART(HOUR, order_time)
 ````
 
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197055326-5a8b6262-cf0d-412d-98f4-07abe36b4ac6.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/2d200234-7562-4915-b182-3573adcf00b0)
 
 
 ### 10. What was the volume of orders for each day of the week?
 
 ````sql
  SET datefirst 1;
-   SELECT COUNT(co.order_id) AS pizzas_ordered, 
+   SELECT 
  	  DATEPART(WEEKDAY, order_time) AS day_num, 
-	  DATENAME(WEEKDAY, order_time) AS weekday
+	  DATENAME(WEEKDAY, order_time) AS weekday,
+          COUNT(co.order_id) AS pizzas_ordered 
      FROM DannySQLChallenge2..customer_orders AS co
      JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
  GROUP BY DATEPART(WEEKDAY, order_time), DATENAME(WEEKDAY, order_time)
 ````
-<img width="270" alt="image" src="https://user-images.githubusercontent.com/59825363/197055773-d3fbb7e6-94ed-4406-93fd-390fe1da7e3e.png">
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/e8dfba34-02b0-46fb-a2a7-17cec400974c)
 
 ## B. Runner and Customer Experience
 
@@ -156,7 +162,7 @@ SET datefirst 1;
 GROUP BY DATEPART(week,registration_date)
 ````
 
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197056378-dbd5ede4-dd76-44ff-9fc5-2a6b1e39e168.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/8ad2b4f6-3511-4f5d-97fe-d176f193a2e1)
 
 ### 2.  What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
 
@@ -164,35 +170,36 @@ GROUP BY DATEPART(week,registration_date)
 WITH time_taken AS
 (
 SELECT DISTINCT(ron.order_id),runner_id, 
-       DATEDIFF(MINUTE, order_time, pickup_time) AS pickup_time
+DATEDIFF(MINUTE, order_time, pickup_time) AS pickup_time
   FROM DannySQLChallenge2..runner_order_new AS ron
   JOIN DannySQLChallenge2..customer_orders AS co ON co.order_id = ron.order_id
  WHERE cancellation = ''
 )
 
-  SELECT runner_id, 
-  	 AVG(pickup_time) AS average_pickup
-    FROM time_taken
+SELECT runner_id, 
+       CONCAT(AVG(pickup_time),' minutes') AS average_pickup
+  FROM time_taken
 GROUP BY runner_id
 ````
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197056427-c66460e1-1ba4-4716-b602-ee627ab04ff5.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/ad3010ec-d912-42c6-a323-5448efcc5c79)
 
 ### 3.  Is there any relationship between the number of pizzas and how long the order takes to prepare?
 
 ````sql
-   SELECT DISTINCT ron.order_id, 
-   	  runner_id, 
-	  DATEDIFF(MINUTE, order_time, pickup_time) AS pickup_time, 
-	  COUNT(co.pizza_id) AS pizza_count
-     FROM DannySQLChallenge2..runner_order_new AS ron
-     JOIN DannySQLChallenge2..customer_orders AS co ON co.order_id = ron.order_id
-    WHERE cancellation = ''
+WITH CTE AS(
+
+SELECT DISTINCT ron.order_id, runner_id, DATEDIFF(MINUTE, order_time, pickup_time) AS pickup_time, COUNT(co.pizza_id) AS pizza_count
+  FROM DannySQLChallenge2..runner_order_new AS ron
+  JOIN DannySQLChallenge2..customer_orders AS co ON co.order_id = ron.order_id
+ WHERE cancellation = ''
  GROUP BY ron.order_id, runner_id, DATEDIFF(MINUTE, order_time, pickup_time)
+)
+
+SELECT pizza_count, AVG(pickup_time) AS avg_prep
+  FROM CTE
+GROUP BY pizza_count
 ````
-<img width="300" alt="image" src="https://user-images.githubusercontent.com/59825363/197057679-ff90ee82-b668-40ce-a091-7110781b86cc.png">
-
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/7beca5c9-1f69-4d0d-b7aa-8f0e2528e050)
 
 ### 4.  What was the average distance travelled for each customer?
 
