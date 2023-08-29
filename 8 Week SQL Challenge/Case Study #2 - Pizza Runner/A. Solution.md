@@ -112,16 +112,13 @@ GROUP BY customer_id
 ### 8.  How many pizzas were delivered that had both exclusions and extras?
 
 ````sql
-  SELECT co.order_id, 
-	 COUNT(DISTINCT co.order_id) AS excl_extras
-    FROM DannySQLChallenge2..customer_orders AS co
-    JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
-   WHERE distance <> '' AND exclusions <> '' AND extras <> ''
-GROUP BY co.order_id
+SELECT COUNT(DISTINCT co.order_id) AS excl_extras
+  FROM DannySQLChallenge2..customer_orders AS co
+  JOIN DannySQLChallenge2..runner_order_new AS ro ON ro.order_id = co.order_id
+WHERE distance <> '' AND exclusions <> '' AND extras <> ''
 ````
 
-![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/58deb0ef-1d1f-40d3-937b-c0c0d4e0a7e8)
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/6737c855-fe81-49c0-a173-721905e41515)
 
 ### 9.  What was the total volume of pizzas ordered for each hour of the day?
 
@@ -195,43 +192,39 @@ SELECT DISTINCT ron.order_id, runner_id, DATEDIFF(MINUTE, order_time, pickup_tim
  GROUP BY ron.order_id, runner_id, DATEDIFF(MINUTE, order_time, pickup_time)
 )
 
-SELECT pizza_count, AVG(pickup_time) AS avg_prep
+SELECT pizza_count, CONCAT(AVG(pickup_time), ' minutes') AS avg_prep
   FROM CTE
 GROUP BY pizza_count
 ````
-![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/7beca5c9-1f69-4d0d-b7aa-8f0e2528e050)
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f1c1a439-ad8e-4c78-8ec5-8b7c5534e4db)
+
 
 ### 4.  What was the average distance travelled for each customer?
 
 ````sql
 WITH distance_by_order
 AS(
-SELECT DISTINCT(co.order_id), 
-       co.customer_id, 
-       distance
+SELECT DISTINCT(co.order_id), co.customer_id, distance
   FROM DannySQLChallenge2..customer_orders AS co
   JOIN DannySQLChallenge2..runner_order_new AS ron ON ron.order_id=co.order_id 
- WHERE distance <> ''
+ WHERE cancellation = ''
 )
 
-  SELECT customer_id, 
-  	 AVG(CAST(distance AS float)) AS average_distance
-    FROM distance_by_order
+SELECT customer_id, CONCAT(AVG(CAST(distance AS float)),' km') AS average_distance
+FROM distance_by_order
 GROUP BY customer_id
 ````
-
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197057765-404109ba-99dd-46c7-970e-9e9291a0b482.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/689f4d2b-6dae-4c90-9087-e381e3e78291)
 
 ### 5.  What was the difference between the longest and shortest delivery times for all orders?
 
 ````sql
-SELECT  MAX(CAST(duration AS float)) - MIN(CAST(duration AS float)) AS delivery_time_difference
+SELECT  CONCAT(MAX(CAST(duration AS float)) - MIN(CAST(duration AS float)), ' minutes') AS delivery_time_difference
   FROM DannySQLChallenge2..runner_order_new
- WHERE distance <> ''
+WHERE distance <> ''
 ````
 
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197058194-1c7370cc-8d6b-428d-8d6b-ad08f2ef3b7a.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/85d1dde3-adbc-48f5-a4b5-5b34a16c7f65)
 
 
 ### 6.  What was the average speed for each runner for each delivery and do you notice any trend for these values?
@@ -239,22 +232,19 @@ SELECT  MAX(CAST(duration AS float)) - MIN(CAST(duration AS float)) AS delivery_
 ````sql
 WITH runner_speed
 AS(
-SELECT runner_id, ron.order_id, 
-       ROUND(CAST(ron.distance AS float) / (CAST(ron.duration AS float)/60),2) AS avg_speed
+SELECT  runner_id, ron.order_id, ROUND(CAST(ron.distance AS float) / (CAST(ron.duration AS float)/60),2) AS avg_speed
   FROM DannySQLChallenge2..runner_order_new AS ron
- WHERE distance <> ''
+WHERE distance <> ''
 )
 
-  SELECT runner_id, 
-  	 ROUND(AVG(avg_speed),2) AS avg_speed, 
-	 MAX(avg_speed)-MIN(avg_speed) AS speed_variation
-    FROM runner_speed
+SELECT runner_id, 
+	  CONCAT(ROUND(AVG(avg_speed),1),' km/h') AS avg_speed, 
+	  CONCAT(MAX(avg_speed)-MIN(avg_speed),' km/h')  AS speed_variation
+  FROM runner_speed
 GROUP BY runner_id
 ````
 
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197058254-f336e5ab-d652-434d-a9f9-4ae44e771488.png">
-
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/08303629-4026-45a3-bda4-75f323685c1c)
 
 ### 7.  What is the successful delivery percentage for each runner?
 
