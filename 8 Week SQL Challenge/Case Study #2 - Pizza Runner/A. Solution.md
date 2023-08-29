@@ -249,16 +249,16 @@ GROUP BY runner_id
 ### 7.  What is the successful delivery percentage for each runner?
 
 ````sql
-SELECT runner_id, 
+SELECT runner_id, CONCAT( 
        SUM(100*CASE 
 		   WHEN distance = '' 
 		   THEN 0
 		   ELSE 1 
-		   END) / COUNT(*) AS success
+		   END) / COUNT(*),'%') AS success_rate
   FROM DannySQLChallenge2..runner_order_new
 GROUP BY runner_id
 ````
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/197058543-ca416fc5-154f-4db5-9f0a-c4bc477a09d7.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/a1bd5071-3b57-475c-be3f-84c87ed2b234)
 
 
 ## C. Ingredient Optimisation
@@ -292,8 +292,7 @@ SELECT cpt.pizza_id, pizza_name, S
   JOIN DannySQLChallenge2..pizza_names AS pn ON cpt.pizza_id = pn.pizza_id
 GROUP BY cpt.pizza_id, pizza_name
 ````
-<img width="650" alt="image" src="https://user-images.githubusercontent.com/59825363/197059058-139e6b03-99f3-43d8-af07-42d71b92cecf.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/7f5a7cf0-4173-4c1b-a7d5-d59b900195a5)
 
 
 ### 2.  What was the most commonly added extra?
@@ -314,8 +313,7 @@ SELECT topping_id, topping_name ,
   FROM extras_count
 GROUP BY topping_id, topping_name
 ````
-<img width="300" alt="image" src="https://user-images.githubusercontent.com/59825363/197070876-2b0c3162-30b5-477f-83da-89959ead7cc1.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/2edd787b-59cc-4df2-9a4a-f197a578ab1e)
 
 
 ### 3.  What was the most common exclusion?
@@ -325,22 +323,19 @@ WITH exclusions_list
 AS
 (
 SELECT TRIM(value) AS topping_id, 
-       CAST(topping_name AS varchar(100)) AS topping_name
+	   CAST(topping_name AS varchar(100)) AS topping_name
   FROM DannySQLChallenge2..customer_orders
 	   CROSS APPLY STRING_SPLIT(exclusions, ',') AS val
   JOIN DannySQLChallenge2..pizza_toppings AS pt ON pt.topping_id = TRIM(val.value)
  WHERE value <> ''
 )
 
-  SELECT topping_id, topping_name, 
-     	 count(*) AS total
-    FROM exclusions_list
+SELECT topping_id, topping_name, count(*) AS total
+  FROM exclusions_list
 GROUP BY topping_id, topping_name
-ORDER BY topping_id,topping_name
+ORDER BY total DESC
 ````
-
-<img width="300" alt="image" src="https://user-images.githubusercontent.com/59825363/197070983-d15653fa-fbf7-4d87-ba8b-703ecf0ad8b9.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/07c20721-a39d-4d0f-bb60-4501b08a02df)
 
 ### 4.  Generate an order item for each record in the customers_orders table in the format of one of the following:
   - Meat Lovers
@@ -385,8 +380,7 @@ SELECT CONCAT('$',SUM(
  WHERE cancellation = ''
 ````
 
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197854447-3bb9247a-7092-450b-8bda-72a621b0e1c1.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/57348aa6-27cf-4e91-8acf-af9385effe96)
 
 ### 2.	What if there was an additional $1 charge for any pizza extras?
 	-	Add cheese is $1 extra
@@ -407,8 +401,7 @@ SELECT CONCAT('$',
   JOIN DannySQLChallenge2..runner_order_new AS ron ON ron.order_id=co.order_id
  WHERE cancellation = ''
 ````
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/197854666-acfb6a7a-be0f-4417-abe1-6496187dbf6f.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/64f3e35f-0a78-47f3-97ad-f7ea92a2d4a1)
 
 ### 3.	The Pizza Runner team now wants to add an additional ratings system that allows customers to rate their runner, how would you design an additional table for this new dataset - generate a schema for this new table and insert your own data for ratings for each successful customer order between 1 to 5.
 ### 4.	Using your newly generated table - can you join all of the information together to form a table which has the following information for successful deliveries?
@@ -439,9 +432,7 @@ SELECT customer_id,
  GROUP BY customer_id, ron.order_id, runner_id, order_time, pickup_time, duration, ROUND(CAST(ron.distance AS float) / (CAST(ron.duration AS float)/60),2)
 
 ````
-<img width="750" alt="image" src="https://user-images.githubusercontent.com/59825363/197854908-7d58901f-6f0f-44e7-bc1e-7a081814308c.png">
-
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/0f4c870a-66b3-4875-9781-d30802578454)
 
 ### 5.	If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
 
@@ -491,5 +482,6 @@ SELECT *
   FROM DannySQLChallenge2..pizza_names AS pn
   JOIN DannySQLChallenge2..pizza_recipes AS pt ON pt.pizza_id = pn.pizza_id
 ````
-<img width="350" alt="image" src="https://user-images.githubusercontent.com/59825363/197855242-a4a13ef8-ce14-481f-b6a1-d5c9de481340.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/abd4bf82-7262-496e-aeb1-d7563058dd77)
+
 
