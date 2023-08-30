@@ -344,8 +344,58 @@ ORDER BY total DESC
   - Meat Lovers - Exclude Cheese, Bacon - Extra Mushroom, Peppers
 
 ````sql
-
+WITH pizza_numbers
+AS
+(
+SELECT order_id, customer_id, pizza_name, exclusions, extras,
+	   ROW_NUMBER() OVER(ORDER BY order_id) AS pizza_number
+  FROM DannySQLChallenge2..customer_orders AS co
+JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
+), 
+excl_tab AS(
+SELECT co.order_id, co.customer_id,pizza_number, pizza_name, 
+	   CASE WHEN exclusions <>'' THEN '- Exclude ' ELSE '' END AS text_addition, 
+	   TRIM(excl1.value) AS exclusions_extras
+  FROM pizza_numbers AS co
+  CROSS APPLY STRING_SPLIT(exclusions, ',') AS excl1
+), ex_tab AS
+(
+SELECT co.order_id, co.customer_id,pizza_number, pizza_name,
+	   CASE WHEN extras <> '' THEN '- Extras ' ELSE '' END AS text_addition, 
+	   TRIM(extr1.value) AS exclusions_extras
+  FROM pizza_numbers AS co
+  CROSS APPLY STRING_SPLIT(extras, ',') AS extr1
+), combo_tab AS
+(
+SELECT order_id, customer_id, pizza_number, pizza_name, text_addition, exclusions_extras, topping_id, topping_name
+  FROM excl_tab
+ JOIN DannySQLChallenge2..cleaned_pizza_toppings AS cpt ON cpt.topping_id = exclusions_extras
+ WHERE text_addition <> ''
+UNION
+SELECT order_id, customer_id, pizza_number, pizza_name, text_addition, exclusions_extras, topping_id, topping_name
+  FROM ex_tab
+JOIN DannySQLChallenge2..cleaned_pizza_toppings AS cpt ON cpt.topping_id = exclusions_extras
+ WHERE text_addition <> ''
+), combo_tab2 AS
+(
+SELECT pizza_number, TRIM(pizza_name) AS pizza_name, TRIM(text_addition) AS text_addition, STRING_AGG(topping_name, ', ') AS agg
+  FROM combo_tab
+GROUP BY pizza_number, TRIM(pizza_name), TRIM(text_addition)
+), combo_tab3 AS
+(
+SELECT order_id, customer_id, pns.pizza_name,pns.pizza_number, CONCAT(text_addition,' ', agg) AS agg
+  FROM pizza_numbers AS pns
+LEFT JOIN combo_tab2 AS ct2 ON ct2.pizza_number = pns.pizza_number
+), combo_tab4 AS
+(
+SELECT order_id, customer_id,pizza_name, STRING_AGG(agg,' ') AS agg
+  FROM combo_tab3
+GROUP BY order_id, customer_id, pizza_name, pizza_number
+)
+SELECT order_id, customer_id, CONCAT(pizza_name,' ',agg) AS pizza_order
+  FROM combo_tab4
 ````
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/81208024-5baa-4312-9bc3-6501d6c713a3)
 
 	-	
 ### 5.	Generate an alphabetically ordered comma separated ingredient list for each pizza order from the customer_orders table and add a 2x in front of any relevant ingredients
