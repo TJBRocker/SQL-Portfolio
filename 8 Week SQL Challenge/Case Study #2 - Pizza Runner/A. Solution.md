@@ -460,13 +460,11 @@ SELECT *, CASE WHEN topping_count>1 THEN CONCAT(topping_count,'x',topping_name) 
   FROM total_toppings
 )
 
-  SELECT order_id, customer_id, CONCAT(pizza_name,':',STRING_AGG(topping_string,', ')) AS pizza_ingredients
+  SELECT order_id, customer_id, CONCAT(pizza_name,': ',STRING_AGG(topping_string,', ')) AS pizza_ingredients
     FROM topping_string_name
 GROUP BY order_id, customer_id, pizza_name, pizza_number
 ````
-
-![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/0e29570f-a3b3-4d78-9e80-0d8be44c27b1)
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/8e15c171-fef9-49fc-9477-eb0d7b9ef0ef)
 	
 ### 6.	What is the total quantity of each ingredient used in all delivered pizzas sorted by most frequent first?
 
