@@ -400,8 +400,72 @@ SELECT order_id, customer_id, CONCAT(pizza_name,' ',agg) AS pizza_order
 ### 5.	Generate an alphabetically ordered comma separated ingredient list for each pizza order from the customer_orders table and add a 2x in front of any relevant ingredients. For example: ""Meat Lovers: 2xBacon, Beef, ... , Salami""
 
 ````sql
+WITH recipe_split AS
+(
+     SELECT pr.pizza_id, pizza_name, TRIM(split.value) AS topping_id
+       FROM DannySQLChallenge2..pizza_recipes AS pr
+	   JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = pr.pizza_id
+CROSS APPLY STRING_SPLIT(CAST(toppings AS nvarchar), ',') AS split
+), pizza_listed AS(
 
+SELECT DISTINCT rs.pizza_id, pizza_name, rs.topping_id, topping_name, 1 AS topping_count
+  FROM recipe_split AS rs
+  JOIN DannySQLChallenge2..cleaned_pizza_toppings AS cpt ON cpt.topping_id = rs.topping_id
+), pizza_numbers AS
+(
+SELECT order_id, customer_id, co.pizza_id, pizza_name, exclusions, extras,
+	   ROW_NUMBER() OVER(ORDER BY order_id) AS pizza_number
+  FROM DannySQLChallenge2..customer_orders AS co
+JOIN DannySQLChallenge2..pizza_names AS pn ON pn.pizza_id = co.pizza_id
+), exclusions_tab AS
+(
+SELECT co.order_id, co.customer_id,pizza_number, pizza_name, 
+	   TRIM(excl1.value) AS extra_excl, CASE WHEN TRIM(excl1.value) <> ''  THEN -1 ELSE 0 END AS topping_addition_subtraction
+  FROM pizza_numbers AS co
+  CROSS APPLY STRING_SPLIT(exclusions, ',') AS excl1
+ WHERE exclusions <> ''
+), extras_tab AS
+(
+SELECT co.order_id, co.customer_id,pizza_number, pizza_name, 
+	   TRIM(extra1.value) AS extra_excl, CASE WHEN TRIM(extra1.value) <> ''  THEN 1 ELSE 0 END AS topping_addition_subtraction
+  FROM pizza_numbers AS co
+  CROSS APPLY STRING_SPLIT(extras, ',') AS extra1
+ WHERE extras <> ''
+ ), excl_additions_table AS
+(
+ SELECT order_id, customer_id, pizza_number, pizza_name, extra_excl AS topping_id, topping_name, topping_addition_subtraction
+   FROM exclusions_tab AS etab
+   JOIN DannySQLChallenge2..cleaned_pizza_toppings AS cpt ON cpt.topping_id = etab.extra_excl
+  UNION
+ SELECT order_id, customer_id, pizza_number, pizza_name, extra_excl AS topping_id, topping_name, topping_addition_subtraction
+   FROM extras_tab AS et
+   JOIN DannySQLChallenge2..cleaned_pizza_toppings AS cpt ON cpt.topping_id = et.extra_excl
+), count_table AS
+(
+SELECT order_id, customer_id, pizza_number, pn.pizza_name, CAST(topping_id AS float) AS topping_id, topping_name, topping_count
+  FROM pizza_numbers AS pn
+  JOIN pizza_listed AS pl ON pl.pizza_id = pn.pizza_id
+ UNION ALL
+SELECT *
+  FROM excl_additions_table
+), total_toppings AS
+(
+SELECT order_id, customer_id, pizza_number, pizza_name, topping_name, SUM(topping_count) AS topping_count
+  FROM count_table
+GROUP BY order_id, customer_id, pizza_number, pizza_name, topping_name
+HAVING SUM(topping_count) > 0 
+), topping_string_name AS
+(
+SELECT *, CASE WHEN topping_count>1 THEN CONCAT(topping_count,'x',topping_name) ELSE topping_name END AS topping_string
+  FROM total_toppings
+)
+
+  SELECT order_id, customer_id, CONCAT(pizza_name,':',STRING_AGG(topping_string,', ')) AS pizza_ingredients
+    FROM topping_string_name
+GROUP BY order_id, customer_id, pizza_name, pizza_number
 ````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/0e29570f-a3b3-4d78-9e80-0d8be44c27b1)
 
 	
 ### 6.	What is the total quantity of each ingredient used in all delivered pizzas sorted by most frequent first?
