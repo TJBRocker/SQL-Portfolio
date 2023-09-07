@@ -338,10 +338,10 @@ ORDER BY total DESC
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/07c20721-a39d-4d0f-bb60-4501b08a02df)
 
 ### 4.  Generate an order item for each record in the customers_orders table in the format of one of the following:
-  - Meat Lovers
-  - Meat Lovers - Exclude Beef
-  - Meat Lovers - Extra Bacon
-  - Meat Lovers - Exclude Cheese, Bacon - Extra Mushroom, Peppers
+	-	Meat Lovers
+	-	Meat Lovers - Exclude Beef
+	-	Meat Lovers - Extra Bacon
+	-	Meat Lovers - Exclude Cheese, Bacon - Extra Mushroom, Peppers
 
 ````sql
 WITH pizza_numbers
@@ -566,8 +566,7 @@ SELECT CONCAT('$',
 ````
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/64f3e35f-0a78-47f3-97ad-f7ea92a2d4a1)
 
-### 3.	The Pizza Runner team now wants to add an additional ratings system that allows customers to rate their runner, how would you design an additional table for this new dataset - generate a schema for this new table and insert your own data for ratings for each successful customer order between 1 to 5.
-### 4.	Using your newly generated table - can you join all of the information together to form a table which has the following information for successful deliveries?
+### 3.	Using your newly generated table - can you join all of the information together to form a table which has the following information for successful deliveries?
 	-	customer_id
 	-	order_id
 	-	runner_id
@@ -597,7 +596,7 @@ SELECT customer_id,
 ````
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/0f4c870a-66b3-4875-9781-d30802578454)
 
-### 5.	If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
+### 4.	If a Meat Lovers pizza was $12 and Vegetarian $10 fixed prices with no cost for extras and each runner is paid $0.30 per kilometre traveled - how much money does Pizza Runner have left over after these deliveries?
 
 ````sql
 WITH revenue_tab
