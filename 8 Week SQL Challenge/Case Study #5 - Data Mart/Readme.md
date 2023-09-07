@@ -2,6 +2,8 @@
 
 ![image](https://user-images.githubusercontent.com/59825363/196279535-0af81f3b-e8fc-45ac-a67b-f4380bd4fa17.png)
 
+**_My solution_** can be found [HERE!](https://github.com/TJBRocker/SQL-Portfolio/blob/main/8%20Week%20SQL%20Challenge/Case%20Study%20%235%20-%20Data%20Mart/Solution.md)
+
 ## Task
 
 Data Mart is Danny’s latest venture and after running international operations for his online supermarket that specialises in fresh produce - Danny is asking for your support to analyse his sales performance.
