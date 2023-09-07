@@ -2,6 +2,8 @@
 
 ![image](https://user-images.githubusercontent.com/59825363/196279798-367b1cb0-bea6-4b8a-8ae1-910bb8248eab.png)
 
+**_My solution_** can be found [HERE!](https://github.com/TJBRocker/SQL-Portfolio/blob/main/8%20Week%20SQL%20Challenge/Case%20Study%20%238%20-%20Fresh%20Segments/Solution.md)
+
 ## Task
 
 Danny created Fresh Segments, a digital marketing agency that helps other businesses analyse trends in online ad click behaviour for their unique customer base.
