@@ -459,17 +459,3 @@ Snapshot:
 
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/98cc5a77-ecc1-4106-85ca-bf7ab98775ef)
 
-
-````sql
-
-
-
-````
-
-````sql
-
-
-
-````
-
-
