@@ -568,16 +568,16 @@ SELECT CONCAT('$',
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/64f3e35f-0a78-47f3-97ad-f7ea92a2d4a1)
 
 ### 3.	Using your newly generated table - can you join all of the information together to form a table which has the following information for successful deliveries?
-	-	customer_id
-	-	order_id
-	-	runner_id
-	-	rating
-	-	order_time
-	-	pickup_time
-	-	Time between order and pickup
-	-	Delivery duration
-	-	Average speed
-	-	Total number of pizzas
+    * `customer_id`
+    *  `order_id`
+    * `runner_id`
+    * `rating`
+    * `order_time`
+    * `pickup_time`
+    * Time between order and pickup
+    * Delivery duration
+    * Average speed
+    * Total number of pizzas
 
 ````sql
 SELECT customer_id,
