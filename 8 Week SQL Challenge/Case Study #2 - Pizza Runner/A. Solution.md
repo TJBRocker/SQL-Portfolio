@@ -338,10 +338,10 @@ ORDER BY total DESC
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/07c20721-a39d-4d0f-bb60-4501b08a02df)
 
 ### 4.  Generate an order item for each record in the customers_orders table in the format of one of the following:
-	-	Meat Lovers
-	-	Meat Lovers - Exclude Beef
-	-	Meat Lovers - Extra Bacon
-	-	Meat Lovers - Exclude Cheese, Bacon - Extra Mushroom, Peppers
+    * Meat Lovers
+    * Meat Lovers - Exclude Beef
+    * Meat Lovers - Extra Bacon
+    * Meat Lovers - Exclude Cheese, Bacon - Extra Mushroom, Peppers
 
 ````sql
 WITH pizza_numbers
