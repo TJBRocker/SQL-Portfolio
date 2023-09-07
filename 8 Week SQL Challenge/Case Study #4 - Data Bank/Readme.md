@@ -2,6 +2,8 @@
 
 ![image](https://user-images.githubusercontent.com/59825363/196279439-1d26a9e7-959f-4c8f-972c-2f4bdf0b7f40.png)
 
+**_My solution_** can be found [HERE!](https://github.com/TJBRocker/SQL-Portfolio/blob/main/8%20Week%20SQL%20Challenge/Case%20Study%20%234%20-%20Data%20Bank/Solution.md)
+
 ## Task
 
 There is a new innovation in the financial industry called Neo-Banks: new aged digital only banks without physical branches.
