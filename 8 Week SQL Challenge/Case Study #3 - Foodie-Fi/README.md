@@ -2,6 +2,8 @@
 
 ![image](https://user-images.githubusercontent.com/59825363/196279368-adc19fa7-3464-49a5-86cc-cab984fa5045.png)
 
+**_My solution_** can be found [HERE!](https://github.com/TJBRocker/SQL-Portfolio/blob/main/8%20Week%20SQL%20Challenge/Case%20Study%20%233%20-%20Foodie-Fi/Solution.md)
+
 ## Task
 Subscription based businesses are super popular and Danny realised that there was a large gap in the market - he wanted to create a new streaming service that only had food related content - something like Netflix but with only cooking shows!
 
