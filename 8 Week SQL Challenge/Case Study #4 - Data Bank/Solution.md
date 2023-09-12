@@ -301,7 +301,7 @@ For this multi-part challenge question - you have been requested to generate the
 -	minimum, average and maximum values of the running balance for each customer
 Using all of the data available - how much data would have been required for each option on a monthly basis?
 
-1.	running customer balance column that includes the impact each transaction
+### 1.	Running customer balance column that includes the impact each transaction
 
 `````sql
 
@@ -316,7 +316,7 @@ SELECT customer_id, txn_date, txn_type, txn_amount,
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/47e49b39-1c4a-4c9f-abba-19b90bd675c3)
 
 
-2.	customer balance at the end of each month
+### 2.	Customer balance at the end of each month
 
 `````sql
 WITH
@@ -345,7 +345,7 @@ ORDER BY customer_id, month_num
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/0eb7b032-a96b-497e-a341-d7fb73da943d)
 
 
-3.	minimum, average and maximum values of the running balance for each customer
+### 3.	Minimum, average and maximum values of the running balance for each customer
 
 `````sql
 WITH running_balance_tab AS
