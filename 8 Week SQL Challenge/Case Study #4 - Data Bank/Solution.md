@@ -286,7 +286,7 @@ ORDER BY month_num
 ![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/4fe46be8-1233-493e-be76-fc3cfa100b04)
 
 
-## A. Customer Nodes Exploration
+## C. Customer Nodes Exploration
 
 To test out a few different hypotheses - the Data Bank team wants to run an experiment where different groups of customers would be allocated data using 3 different options:
 
@@ -300,4 +300,66 @@ For this multi-part challenge question - you have been requested to generate the
 -	customer balance at the end of each month
 -	minimum, average and maximum values of the running balance for each customer
 Using all of the data available - how much data would have been required for each option on a monthly basis?
+
+1.	running customer balance column that includes the impact each transaction
+
+`````sql
+
+SELECT customer_id, txn_date, txn_type, txn_amount,
+	   DATEPART(month,txn_date) AS month_num,
+	   DATENAME(month,txn_date) AS month,
+	   SUM(CASE WHEN txn_type = 'deposit' THEN txn_amount ELSE -txn_amount END) OVER (PARTITION BY customer_id ORDER BY txn_date) AS running_balance
+  FROM DannySQLChallenge4..Customer_Transactions
+
+`````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/47e49b39-1c4a-4c9f-abba-19b90bd675c3)
+
+
+2.	customer balance at the end of each month
+
+`````sql
+WITH
+updated_trans
+AS
+(
+SELECT customer_id,
+	  SUM(CASE 
+		   WHEN txn_type = 'deposit' THEN txn_amount
+		   ELSE -txn_amount
+	   END) AS movement,
+	   DATEPART(month,txn_date) AS month_num,
+	   DATENAME(month,txn_date) AS month
+  FROM DannySQLChallenge4..Customer_Transactions
+GROUP BY customer_id, DATEPART(month,txn_date), DATENAME(month,txn_date)
+)
+
+SELECT customer_id,
+	   month,
+	   movement,
+	   SUM(movement) OVER(PARTITION BY customer_id ORDER BY month_num ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS closing_balance
+  FROM updated_trans
+ORDER BY customer_id, month_num
+`````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/0eb7b032-a96b-497e-a341-d7fb73da943d)
+
+
+3.	minimum, average and maximum values of the running balance for each customer
+
+`````sql
+WITH running_balance_tab AS
+(
+SELECT customer_id, txn_date, txn_type, txn_amount,
+	   DATEPART(month,txn_date) AS month_num,
+	   DATENAME(month,txn_date) AS month,
+	   SUM(CASE WHEN txn_type = 'deposit' THEN txn_amount ELSE -txn_amount END) OVER (PARTITION BY customer_id ORDER BY txn_date) AS running_balance
+  FROM DannySQLChallenge4..Customer_Transactions
+) 
+SELECT customer_id, MIN(running_balance) AS min_running_balance, MAX(running_balance) AS max_running_balance, ROUND(AVG(running_balance),0) AS avg_running_balance
+  FROM running_balance_tab
+GROUP BY customer_id
+`````
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/6d6e0a85-61a7-4af4-96ad-329aa034c2ab)
+
 
