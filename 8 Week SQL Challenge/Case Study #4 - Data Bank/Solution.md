@@ -243,8 +243,46 @@ SELECT customer_id,
 
 ### What is the percentage of customers who increase their closing balance by more than 5%?
 
-````sql
+Wasn't 100% sure how to interpret this question, so I went with who had increased their balance by more than 5% each month.
 
+````sql
+WITH
+updated_trans AS
+(
+SELECT customer_id,
+	  SUM(CASE 
+		   WHEN txn_type = 'deposit' THEN txn_amount
+		   ELSE -txn_amount
+	   END) AS movement,
+	   DATEPART(month,txn_date) AS month_num,
+	   DATENAME(month,txn_date) AS month
+  FROM DannySQLChallenge4..Customer_Transactions
+GROUP BY customer_id, DATEPART(month,txn_date), DATENAME(month,txn_date)
+),
+closing_bal AS
+(
+SELECT customer_id, 
+	   month_num, 
+	   month,
+	   SUM(movement) OVER(PARTITION BY customer_id ORDER BY month_num ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS closing_balance,
+	   movement
+  FROM updated_trans
+),
+closing_bal_updated AS
+(
+SELECT *,
+	   LAG(closing_balance,1) OVER(PARTITION BY customer_id ORDER BY month_num) AS prev_month_bal,
+	   ROUND(100.0*LAG(closing_balance,1) OVER(PARTITION BY customer_id ORDER BY month_num)/movement,2) AS percentage_movement
+  FROM closing_bal
+)
+SELECT a.month, CONCAT(CAST(ROUND(100.0*COUNT(DISTINCT customer_id)/customer_month_count,2) AS float),'%')
+  FROM closing_bal_updated AS a
+  JOIN (SELECT month, COUNT(DISTINCT customer_id) AS customer_month_count FROM updated_trans GROUP BY month) AS b ON b.month = a.month
+ WHERE percentage_movement >= 5
+GROUP BY month_num, a.month, customer_month_count
+ORDER BY month_num
 ````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/4fe46be8-1233-493e-be76-fc3cfa100b04)
 
 
