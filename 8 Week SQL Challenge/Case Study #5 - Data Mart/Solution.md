@@ -232,20 +232,19 @@ WITH cte
 AS
 (
  SELECT 
-	CASE WHEN week_number BETWEEN 21 AND 24 THEN sales ELSE 0 END AS before_date_sales,
-	CASE WHEN week_number BETWEEN 25 AND 28 THEN sales ELSE 0 END AS after_date_sales
+       CASE WHEN week_number BETWEEN 21 AND 24 THEN sales ELSE 0 END AS before_date_sales,
+       CASE WHEN week_number BETWEEN 25 AND 28 THEN sales ELSE 0 END AS after_date_sales
   FROM DannySQLChallenge5..cleaned_weekly_sales
  WHERE calender_year = 2020 AND week_number BETWEEN 21 AND 28
 )
 
-SELECT SUM(before_date_sales) AS before_event_sales,
-       SUM(after_date_sales) AS after_event_sales,
-       SUM(after_date_sales) - SUM(before_date_sales) AS difference,
+SELECT FORMAT(SUM(before_date_sales),'C') AS before_event_sales,
+       FORMAT(SUM(after_date_sales),'C') AS after_event_sales,
+       FORMAT((SUM(after_date_sales) - SUM(before_date_sales)),'C') AS difference,
        CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
   FROM cte
 ````
-<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199278123-75dd9563-656b-4b3d-90bb-6759d9f4bc03.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/717f2c62-46a0-455b-bf7b-1ab62c6ce76f)
 
 ### 2.  What about the entire 12 weeks before and after?
 
@@ -260,14 +259,13 @@ AS
  WHERE calender_year = 2020 AND week_number BETWEEN 13 AND 36
 )
 
-SELECT SUM(before_date_sales) AS before_event_sales,
-       SUM(after_date_sales) AS after_event_sales,
-       SUM(after_date_sales) - SUM(before_date_sales) AS difference,
+SELECT FORMAT(SUM(before_date_sales),'C') AS before_event_sales,
+       FORMAT(SUM(after_date_sales),'C') AS after_event_sales,
+       FORMAT((SUM(after_date_sales) - SUM(before_date_sales)),'C') AS difference,
        CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
   FROM cte
 ````
-<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199278330-d11ad2e4-98cd-4025-b362-c2d9bfe2fb01.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/6dd23812-14b6-4729-94e8-30cf8eef8cd6)
 
 ### 3.  How do the sale metrics for these 2 periods before and after compare with the previous years in 2018 and 2019?
 
@@ -282,20 +280,19 @@ AS
  WHERE week_number BETWEEN 21 AND 28
 )
 
-  SELECT calender_year,
-         SUM(before_date_sales) AS before_event_sales,
-         SUM(after_date_sales) AS after_event_sales,
-         SUM(after_date_sales) - SUM(before_date_sales) AS difference,
-         CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
-    FROM cte
+SELECT calender_year,
+       FORMAT(SUM(before_date_sales),'C') AS before_event_sales,
+       FORMAT(SUM(after_date_sales),'C') AS after_event_sales,
+       FORMAT((SUM(after_date_sales) - SUM(before_date_sales)),'C') AS difference,
+       CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
+  FROM cte
 GROUP BY calender_year
 ORDER BY calender_year
 ````
-<img width="500" alt="image" src="https://user-images.githubusercontent.com/59825363/199278648-e1960d36-c250-47b7-aba6-a01254de7cbe.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/03b770a7-6f0f-4b82-a19f-9d190307b575)
 
 ````sql
-WITH cte
+WITH cte1
 AS
 (
  SELECT calender_year,
@@ -305,16 +302,16 @@ AS
  WHERE week_number BETWEEN 13 AND 36
 )
 
-   SELECT calender_year,
-	  SUM(before_date_sales) AS before_event_sales,
-	  SUM(after_date_sales) AS after_event_sales,
-	  SUM(after_date_sales) - SUM(before_date_sales) AS difference,
-	  CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
-    FROM cte
+SELECT calender_year,
+       FORMAT(SUM(before_date_sales),'C') AS before_event_sales,
+       FORMAT(SUM(after_date_sales),'C') AS after_event_sales,
+       FORMAT((SUM(after_date_sales) - SUM(before_date_sales)),'C') AS difference,
+       CONCAT(ROUND(100.0*(SUM(after_date_sales) - SUM(before_date_sales))/SUM(before_date_sales),2),'%') AS percentage_difference
+  FROM cte1
 GROUP BY calender_year
 ORDER BY calender_year
 ````
-<img width="500" alt="image" src="https://user-images.githubusercontent.com/59825363/199278803-7c7604f0-7124-491e-8dd7-18d87e82637b.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f255a528-db93-4979-83f1-d6543829f909)
 
 
 ## 4. Bonus Question
