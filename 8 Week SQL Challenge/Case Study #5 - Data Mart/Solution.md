@@ -115,16 +115,15 @@ ORDER BY calender_year
 ````sql
 
    SELECT region, 
-	     calender_year,
-		 DATENAME(month, week_date) AS month_name, 
-		 SUM(sales) AS total_sales
+          calender_year,
+	  DATENAME(month, week_date) AS month_name, 
+	  SUM(sales) AS total_sales
     FROM DannySQLChallenge5..cleaned_weekly_sales
 GROUP BY region, calender_year, month_number, DATENAME(month, week_date)
 ORDER BY region, calender_year, month_number, DATENAME(month, week_date)
 
 ````
-<img width="350" alt="image" src="https://user-images.githubusercontent.com/59825363/199276325-7811639c-c9c8-4902-84c1-9f3076112226.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/339b3615-c2aa-4bfd-ab5b-f917f31eeb26)
 
 
 ### 5.  What is the total count of transactions for each platform
@@ -132,14 +131,13 @@ ORDER BY region, calender_year, month_number, DATENAME(month, week_date)
 ````sql
 
   SELECT platform, 
-		 SUM(transactions) AS total_trans
+         COUNT(transactions) AS total_trans
     FROM DannySQLChallenge5..cleaned_weekly_sales
 GROUP BY platform
 ORDER BY platform
 
 ````
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/199276472-43c0228a-7701-4b87-9a16-06f6b30ca37e.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/842098c1-b921-4ff8-bf82-73c0af8ff0b1)
 
 ### 6.  What is the percentage of sales for Retail vs Shopify for each month?
 
@@ -157,7 +155,6 @@ GROUP BY calender_year,month_number,DATENAME(month,week_date)
 )
 
   SELECT calender_year,
-         month_number,
          month_name,
          ROUND(100.0*shopify_sales/total_sales,2) AS shopify_percent,
          ROUND(100.0*retail_sales/total_sales,2) As retail_percent
@@ -165,8 +162,7 @@ GROUP BY calender_year,month_number,DATENAME(month,week_date)
 ORDER BY calender_year, month_number, month_name
 
 ````
-<img width="450" alt="image" src="https://user-images.githubusercontent.com/59825363/199276864-e2206025-1a81-40a2-99a1-92bf55094d62.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/b3ba5f8e-2478-4a80-8c21-e0f5974f6241)
 
 ### 7.  What is the percentage of sales by demographic for each year in the dataset?
 
@@ -188,25 +184,21 @@ GROUP BY calender_year
     FROM cte
 ORDER BY calender_year
 ````
-<img width="400" alt="image" src="https://user-images.githubusercontent.com/59825363/199277116-f361f14e-f95e-434d-945a-564c792145ff.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/67259938-fc69-4eda-b27e-120a7c655c38)
 
 ### 8.  Which `age_band` and `demographic` values contribute the most to Retail sales?
 
 ````sql
-  SELECT age_band,
-	 demographic,
-	 SUM(sales) AS total_sales,
-	 ROUND(100.0*SUM(sales)/(SELECT SUM(sales) 
-	 			   FROM DannySQLChallenge5..cleaned_weekly_sales),2) 
-				   AS sales_percent
-    FROM DannySQLChallenge5..cleaned_weekly_sales
-   WHERE platform = 'retail'
+SELECT age_band,
+       demographic,
+       SUM(sales) AS total_sales,
+       ROUND(100.0*SUM(sales)/(SELECT SUM(sales) FROM DannySQLChallenge5..cleaned_weekly_sales),2) AS sales_percent
+  FROM DannySQLChallenge5..cleaned_weekly_sales
+ WHERE platform = 'retail'
 GROUP BY age_band, demographic
 ORDER BY SUM(sales) DESC
 ````
-<img width="350" alt="image" src="https://user-images.githubusercontent.com/59825363/199277201-3ec13ee0-faea-464c-be1a-2d2a759d6b3d.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/3bb9f995-76a4-417f-9c4b-b0b1aeb0c981)
 
 ### 9.  Can we use the `avg_transaction` column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
 
@@ -219,9 +211,9 @@ ORDER BY SUM(sales) DESC
 	 CONCAT(ROUND(100.0*(SUM(sales)/SUM(transactions)-AVG(avg_transaction))/AVG(avg_transaction),2),'%') AS percentage_difference
     FROM DannySQLChallenge5..cleaned_weekly_sales
 GROUP BY calender_year, platform
+ORDER BY platform, calender_year
 ````
-<img width="550" alt="image" src="https://user-images.githubusercontent.com/59825363/199277619-bc445d2b-b254-4730-a062-2bf5fba54194.png">
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/15682ed8-077c-4ad0-9b4c-6d3b86415fe7)
 
 ## 3. Before & After Analysis
 
