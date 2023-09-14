@@ -68,9 +68,7 @@ SELECT *
   FROM DannySQLChallenge5..cleaned_weekly_sales
  
 ````
-<img width="900" alt="image" src="https://user-images.githubusercontent.com/59825363/199275893-319fa10e-e45b-4b04-98ab-41ab81db9354.png">
-
-
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/b091bcc2-0eb2-4ab8-a25e-4019e5ca3303)
 
 ## 2. Data Exploration
 
@@ -81,7 +79,8 @@ SELECT DISTINCT DATENAME(weekday,week_date) AS day_name
   FROM DannySQLChallenge5..cleaned_weekly_sales
 ````
 
-<img width="200" alt="image" src="https://user-images.githubusercontent.com/59825363/199276034-db35a89d-980b-430c-8223-06da18a1e4a7.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f10afc0e-2f29-4e74-a5c5-09ff68c09f5d)
+
 
 
 ### 2.  What range of week numbers are missing from the dataset?
@@ -101,14 +100,14 @@ LEFT JOIN (SELECT DISTINCT week_number FROM DannySQLChallenge5..cleaned_weekly_s
 
 ````sql
 
-  SELECT calender_year, 
-	     SUM(transactions) AS trans_count
+  SELECT calender_year,
+         COUNT(transactions) AS trans_count
     FROM DannySQLChallenge5..cleaned_weekly_sales
 GROUP BY calender_year
 ORDER BY calender_year
 
 ````
-<img width="250" alt="image" src="https://user-images.githubusercontent.com/59825363/199276198-242e7803-fc4d-4a3e-a4db-7c6bef73ad42.png">
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/26bdbe9f-6e28-4e0f-a703-99b1155795fe)
 
 
 ### 4.  What is the total sales for each region for each month?
@@ -116,12 +115,12 @@ ORDER BY calender_year
 ````sql
 
    SELECT region, 
-	     month_number, 
+	     calender_year,
 		 DATENAME(month, week_date) AS month_name, 
 		 SUM(sales) AS total_sales
     FROM DannySQLChallenge5..cleaned_weekly_sales
-GROUP BY region, month_number, DATENAME(month, week_date)
-ORDER BY region, month_number, DATENAME(month, week_date)
+GROUP BY region, calender_year, month_number, DATENAME(month, week_date)
+ORDER BY region, calender_year, month_number, DATENAME(month, week_date)
 
 ````
 <img width="350" alt="image" src="https://user-images.githubusercontent.com/59825363/199276325-7811639c-c9c8-4902-84c1-9f3076112226.png">
