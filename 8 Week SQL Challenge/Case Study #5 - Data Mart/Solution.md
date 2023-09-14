@@ -88,9 +88,14 @@ SELECT DISTINCT DATENAME(weekday,week_date) AS day_name
 
 ````sql
 
-
+   SELECT value as missing_weeks
+     FROM generate_series(1,52,1) AS gs
+LEFT JOIN (SELECT DISTINCT week_number FROM DannySQLChallenge5..cleaned_weekly_sales) AS wn ON wn.week_number = gs.value
+    WHERE week_number is NULL
 
 ````
+
+![image](https://github.com/TJBRocker/SQL-Portfolio/assets/59825363/f3423ff8-a82e-4d11-a911-d4e7f3ae3e28)
 
 ### 3.  How many total transactions were there for each year in the dataset?
 
